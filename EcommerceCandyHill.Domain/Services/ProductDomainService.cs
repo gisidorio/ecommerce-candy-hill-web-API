@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Services
 {
-    public class ProductService : IProductService
+    public class ProductDomainService : IProductDomainService
     {
         private readonly IProductRepository _productRepository;
 
-        public ProductService(IProductRepository productRepository) 
+        public ProductDomainService(IProductRepository productRepository) 
         {
             _productRepository = productRepository;
         }

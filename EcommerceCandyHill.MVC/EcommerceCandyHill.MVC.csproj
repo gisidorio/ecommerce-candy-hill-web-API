@@ -8,11 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EcommerceCandyHill.Domain\EcommerceCandyHill.Domain.csproj" />
+    <ProjectReference Include="..\EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj" />
     <ProjectReference Include="..\EcommerceCandyHill.Services\EcommerceCandyHill.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

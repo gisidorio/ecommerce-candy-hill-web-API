@@ -52,7 +52,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                 {
                                     Id = Convert.ToInt32(reader["ProductId"]),
                                     Name = reader["Name"] as string ?? string.Empty,
-                                    Price = Convert.ToDecimal(reader["Price"])
+                                    Price = Convert.ToDecimal(reader["Price"]),
+                                    Quantity = Convert.ToInt32(reader["Quantity"]),
+                                    RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                                 };
 
                                 products.Add(product);
@@ -87,9 +89,11 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             product = new Product
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Price = reader.GetDecimal(reader.GetOrdinal("Price"))
+                                Id = Convert.ToInt32(reader["ProductId"]),
+                                Name = reader["Name"] as string ?? string.Empty,
+                                Price = Convert.ToDecimal(reader["Price"]),
+                                Quantity = Convert.ToInt32(reader["Quantity"]),
+                                RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                             };
                         }
                     }

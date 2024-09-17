@@ -1,4 +1,5 @@
-﻿using EcommerceCandyHill.Services.Interfaces;
+﻿using EcommerceCandyHill.MVC.Models.Save;
+using EcommerceCandyHill.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceCandyHill.MVC.Controllers
@@ -15,6 +16,12 @@ namespace EcommerceCandyHill.MVC.Controllers
         public IActionResult Index()
         {
             _productService.GetAll();
+            return View();
+        }
+
+        public IActionResult SaveProduct(ProductSaveModel productSaveModel) 
+        { 
+
             return View();
         }
     }

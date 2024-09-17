@@ -11,9 +11,9 @@ namespace EcommerceCandyHill.Application.Services
 {
     public class ProductAppService : IProductAppService
     {
-        private readonly IProductService _productService;
+        private readonly IProductDomainService _productService;
 
-        public ProductAppService(IProductService productService) 
+        public ProductAppService(IProductDomainService productService) 
         {
             _productService = productService;
         }
