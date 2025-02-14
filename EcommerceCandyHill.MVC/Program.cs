@@ -28,14 +28,19 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
-
 app.UseRouting();
+app.MapControllers();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Product}/{action=SaveProduct}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "product",
+    pattern: "Product/{action=Index}/{id?}",
+    defaults: new { controller = "Product" });
 
 app.Run();

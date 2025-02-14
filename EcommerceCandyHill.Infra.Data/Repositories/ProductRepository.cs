@@ -53,7 +53,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                     Id = Convert.ToInt32(reader["ProductId"]),
                                     Name = reader["Name"] as string ?? string.Empty,
                                     Price = Convert.ToDecimal(reader["Price"]),
-                                    Quantity = Convert.ToInt32(reader["Quantity"]),
+                                    EAN = reader["EAN"] as string ?? string.Empty,
                                     RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                                 };
 
@@ -92,7 +92,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                 Id = Convert.ToInt32(reader["ProductId"]),
                                 Name = reader["Name"] as string ?? string.Empty,
                                 Price = Convert.ToDecimal(reader["Price"]),
-                                Quantity = Convert.ToInt32(reader["Quantity"]),
+                                EAN = reader["EAN"] as string ?? string.Empty,
                                 RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                             };
                         }
