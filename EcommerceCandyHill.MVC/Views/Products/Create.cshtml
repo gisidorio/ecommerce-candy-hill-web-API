@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Site</title>
+    <link rel="stylesheet" type="text/css" href="~/css/Products/CreateProduct.css"/>
+</head>
+<body>
+    <div class="container">
+        <form action="/Products/SaveProduct" method="post">
+            <div class="row">
+                <div class="col-sm-8">
+                    <label>Nome <span class="product-required-fields">*</span></label>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="Name">
+                    <div class="valid-feedback">
+                        Dado válido!
+                    </div>
+                    <div class="invalid-feedback">
+                        Digite o seu nome!
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label>Preço <span class="product-required-fields">*</span></label>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="Price" id="price" step="any">
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label>EAN <span class="product-required-fields">*</span></label>
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="EAN">
+                </div>
+                <div class="col-sm-4">
+                    <label for="data" class="form-label">Data de validade <span class="product-required-fields">*</span></label>
+                    <input type="date" class="form-control" id="data" name="ExpirationDate" placeholder="Insira a data de validade produto">
+                </div>
+            </div>
+            <div class="row d-grid gap-2">
+                <div class="col-sm-12">
+                    <label for="floatingTextarea">Descrição (opcional)</label>
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" rows="10"></textarea>
+                </div>
+            </div>
+            <div>
+                <div class="row d-grid gap-2">
+                    <div class="col-sm-3">
+                        <button type="submit" class="btn btn-success form-control">Salvar</button>
+                    </div>
+                    <div class="col-sm-3">
+                        <button class="btn btn-primary form-control">Limpar</button>
+                    </div>
+                </div>                
+            </div>            
+        </form>
+    </div>
+</body>
+</html>

@@ -1,5 +1,7 @@
-﻿using EcommerceCandyHill.Domain.Entities;
+﻿using EcommerceCandyHill.Application.Util;
+using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.MVC.Models.Save;
+
 
 namespace EcommerceCandyHill.MVC.Mapper
 {
@@ -11,10 +13,9 @@ namespace EcommerceCandyHill.MVC.Mapper
             {
                 Name = saveProductViewModel.Name,
                 Description = saveProductViewModel.Description,
-                Price = saveProductViewModel.Price,
+                Price = ConversorHelper.ConverterParaDecimal(saveProductViewModel.Price),
                 EAN = saveProductViewModel.EAN,
-                ExpirationDate = saveProductViewModel.ExpirationDate,
-                RegistrationDate = saveProductViewModel.RegistrationDate
+                ExpirationDate = saveProductViewModel.ExpirationDate
             };
         }
     }

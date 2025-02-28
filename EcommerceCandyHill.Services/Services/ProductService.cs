@@ -1,6 +1,7 @@
 ﻿using EcommerceCandyHill.Application.Interfaces;
 using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Services.Interfaces;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;

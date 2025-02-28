@@ -111,12 +111,15 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@Name", product.Name);
-                    command.Parameters.AddWithValue("@Price", product.Price);
+                    command.Parameters.AddWithValue("@NAME", product.Name);
+                    command.Parameters.AddWithValue("@PRICE", product.Price);
+                    command.Parameters.AddWithValue("@EAN", product.EAN);
+                    command.Parameters.AddWithValue("@EXPIRATION_DATE", product.ExpirationDate);
+                    command.Parameters.AddWithValue("@DESCRIPTION", product.Description);
 
                     SqlParameter outputIdParam = new SqlParameter
                     {
-                        ParameterName = "@Id",
+                        ParameterName = "@ID",
                         SqlDbType = SqlDbType.Int,
                         Direction = ParameterDirection.Output
                     };
