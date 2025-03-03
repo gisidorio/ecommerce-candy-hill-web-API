@@ -14,7 +14,6 @@ namespace EcommerceCandyHill.MVC.Mapper
                 Name = saveProductViewModel.Name,
                 Description = saveProductViewModel.Description,
                 Price = ConversorHelper.ConverterParaDecimal(saveProductViewModel.Price),
-                EAN = saveProductViewModel.EAN,
                 ExpirationDate = saveProductViewModel.ExpirationDate
             };
         }

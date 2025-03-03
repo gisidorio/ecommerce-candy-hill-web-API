@@ -1,5 +1,6 @@
 ﻿using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Domain.Interfaces.Repositories;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,9 +14,17 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 {
     public class ProductRepository : IProductRepository
     {
+        private readonly string _connectionString;
+
+        public ProductRepository(DatabaseSettings databaseSettings)
+        {
+            _connectionString = databaseSettings.ConnectionString;
+        }
+
+
         public void DeleteById(int id)
         {
-            using (SqlConnection connection = new SqlConnection("_connectionString"))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = new SqlCommand("usp_DeleteProduct", connection))
                 {
@@ -34,7 +43,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         {
             List<Product> products = new List<Product>();
 
-            using (SqlConnection connection = new SqlConnection("connectionString"))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = new SqlCommand("usp_GetAllProducts", connection))
                 {
@@ -53,7 +62,6 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                     Id = Convert.ToInt32(reader["ProductId"]),
                                     Name = reader["Name"] as string ?? string.Empty,
                                     Price = Convert.ToDecimal(reader["Price"]),
-                                    EAN = reader["EAN"] as string ?? string.Empty,
                                     RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                                 };
 
@@ -73,7 +81,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         {
             Product? product = null;
 
-            using (SqlConnection connection = new SqlConnection("_connectionString"))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = new SqlCommand("usp_GetProductById", connection))
                 {
@@ -92,7 +100,6 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                 Id = Convert.ToInt32(reader["ProductId"]),
                                 Name = reader["Name"] as string ?? string.Empty,
                                 Price = Convert.ToDecimal(reader["Price"]),
-                                EAN = reader["EAN"] as string ?? string.Empty,
                                 RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
                             };
                         }
@@ -105,15 +112,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public int Save(Product product)
         {
-            using (SqlConnection connection = new SqlConnection("connectionString"))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                using (SqlCommand command = new SqlCommand("usp_SaveProduct", connection))
+                using (SqlCommand command = new SqlCommand("USP_INSERT_PRODUCT", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.AddWithValue("@NAME", product.Name);
                     command.Parameters.AddWithValue("@PRICE", product.Price);
-                    command.Parameters.AddWithValue("@EAN", product.EAN);
                     command.Parameters.AddWithValue("@EXPIRATION_DATE", product.ExpirationDate);
                     command.Parameters.AddWithValue("@DESCRIPTION", product.Description);
 
@@ -141,7 +147,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public void Update(Product product)
         {
-            using (SqlConnection connection = new SqlConnection("_connectionString"))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 using (SqlCommand command = new SqlCommand("usp_UpdateProduct", connection))
                 {

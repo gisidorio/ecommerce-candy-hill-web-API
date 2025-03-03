@@ -16,7 +16,7 @@
         }
         <form class="needs-validation" action="/Products/SaveProduct" method="post" novalidate>
             <div class="row">
-                <div class="col-sm-8">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 col-xxl-6">
                     <label>Nome</label>
                     <input type="text" class="form-control @(ViewData.ModelState["Name"]?.Errors.Count > 0 ? "is-invalid" : "")" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="Name">
                     <div class="valid-feedback">
@@ -26,24 +26,15 @@
                         @Html.ValidationMessageFor(m => m.Name)
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3 col-xxl-3">
                     <label>Preço</label>
                     <input type="text" class="form-control @(ViewData.ModelState["Price"]?.Errors.Count > 0 ? "is-invalid" : "")" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="Price" step="any" />
                     <div class="invalid-feedback d-block">
                         @Html.ValidationMessageFor(m => m.Price)
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <label>EAN</label>
-                    <input type="text" class="form-control @(ViewData.ModelState["EAN"]?.Errors.Count > 0 ? "is-invalid" : "")" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="EAN">
-                    <div class="invalid-feedback">
-                        @Html.ValidationMessageFor(m => m.EAN)
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <label for="data" class="form-label">Escolha uma data:</label>
+                <div class="col-sm-12 col-xxl-3">
+                    <label for="data" class="form-label">Data de validade</label>
                     <input type="date" class="form-control  @(ViewData.ModelState["ExpirationDate"]?.Errors.Count > 0 ? "is-invalid" : "")" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="ExpirationDate">
                     <div class="invalid-feedback">
                         @Html.ValidationMessageFor(m => m.ExpirationDate)

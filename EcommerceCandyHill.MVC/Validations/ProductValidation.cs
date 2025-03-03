@@ -24,12 +24,6 @@ namespace EcommerceCandyHill.Application.Validations
                 .Matches(@"^\d+(\.\d{1,2})?$").WithMessage("O preço deve ser um número decimal válido com até duas casas decimais.");
                 
 
-            RuleFor(p => p.EAN)
-                .NotEmpty().WithMessage("O preenchimento do campo EAN é obrigatório!")
-                .MinimumLength(8).WithMessage("O EAN possui 8 dígitos ou 13 dígitos!")
-                .MaximumLength(13).WithMessage("O EAN possui 8 dígitos ou 13 dígitos!")
-                .Matches("^[0-9]+$").WithMessage("O campo EAN deve conter apenas números!");
-
             RuleFor(p => p.ExpirationDate)
                 .NotEmpty().WithMessage("O preenchimento do campo data de validade deve ser preenchido!")
                 .GreaterThan(DateTime.Now).WithMessage("A data de validade é obrigatória, deve ser maior que data atual e menor que 31/12/9999!");

@@ -14,8 +14,6 @@ namespace EcommerceCandyHill.MVC.Models.Save
 
         public required string Price { get; set; }
 
-        public required string EAN { get; set; }
-
         public required DateTime ExpirationDate { get; set; }
     }
 }

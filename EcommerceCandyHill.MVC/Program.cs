@@ -6,6 +6,7 @@ using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Domain.Interfaces.Repositories;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using EcommerceCandyHill.Domain.Services;
+using EcommerceCandyHill.Infra.Data;
 using EcommerceCandyHill.Infra.Data.Repositories;
 using EcommerceCandyHill.MVC.Models.Save;
 using EcommerceCandyHill.Services.Interfaces;
@@ -22,6 +23,7 @@ builder.Services.AddTransient<IProductDomainService, ProductDomainService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IProductValidator, ProductValidator>();
 builder.Services.AddTransient<IValidator<SaveProductViewModel>, ProductValidator>();
+builder.Services.AddSingleton<DatabaseSettings>();
 
 builder.Services.AddControllersWithViews();
 
