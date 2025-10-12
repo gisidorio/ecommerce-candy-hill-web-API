@@ -6,28 +6,27 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EcommerceCandyHill.MVC.Controllers
 {
-    public class ProductsController : Controller
+    [ApiController]
+    [Route("api/[Controller]")]
+    public class ProdutosController : ControllerBase
     {
         private readonly IProductService _productService;
         private readonly IProductValidator _productValidator;
 
-        public ProductsController(IProductService productService, IProductValidator productValidator)
+        public ProdutosController(IProductService productService, IProductValidator productValidator)
         {
             _productService = productService;
             _productValidator = productValidator;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult ObterTodos()
         {
-            return View();
+            return Ok(_productService.GetAll());
         }
 
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        public IActionResult SaveProduct(SaveProductViewModel saveProductViewModel)        
+        [HttpPost]
+        public IActionResult SalvarProduto([FromBody] SaveProductViewModel saveProductViewModel)        
         {            
             var validationResult = _productValidator.Validate(saveProductViewModel);
 
@@ -42,13 +41,13 @@ namespace EcommerceCandyHill.MVC.Controllers
                     }
                 }
 
-                return View(saveProductViewModel);
+                return Ok(saveProductViewModel);
             }
 
             var product = ProductMapper.ConvertViewModelToEntity(saveProductViewModel);
 
             _productService.Save(product);
-            return View();
+            return Ok();
         }
     }    
 }

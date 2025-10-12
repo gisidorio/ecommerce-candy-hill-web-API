@@ -9,10 +9,10 @@ namespace EcommerceCandyHill.Domain.Entities
     public class Product
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public string? Description { get; set; }
-        public required decimal Price { get; set; }
-        public DateTime ExpirationDate { get; set; }
-        public DateTime? RegistrationDate { get; set; }
+        public required string Nome { get; set; }
+        public string? Descricao { get; set; }
+        public required decimal Preco { get; set; }
+        public int Quantidade { get; set; }
+        public DateTime? DataCadastro { get; set; }
     }
 }

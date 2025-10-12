@@ -27,6 +27,14 @@ builder.Services.AddSingleton<DatabaseSettings>();
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy => policy
+            .WithOrigins("http://localhost:4200") // endereço do Angular
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
@@ -36,12 +44,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors("AllowAngular");
 app.UseHttpsRedirection();
 app.UseRouting();
 app.MapControllers();
 app.UseStaticFiles();
 
 app.UseAuthorization();
+
+app.MapFallbackToFile("index.html");
 
 app.MapControllerRoute(
     name: "default",

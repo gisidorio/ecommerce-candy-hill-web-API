@@ -45,7 +45,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                using (SqlCommand command = new SqlCommand("usp_GetAllProducts", connection))
+                using (SqlCommand command = new SqlCommand("USP_OBTER_TODOS_PRODUTOS", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
@@ -59,10 +59,12 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                             {
                                 Product product = new Product
                                 {
-                                    Id = Convert.ToInt32(reader["ProductId"]),
-                                    Name = reader["Name"] as string ?? string.Empty,
-                                    Price = Convert.ToDecimal(reader["Price"]),
-                                    RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
+                                    Id = Convert.ToInt32(reader["Id"]),
+                                    Nome = reader["Nome"] as string ?? string.Empty,
+                                    Preco = Convert.ToDecimal(reader["Preco"]),
+                                    Descricao = reader["Descricao"] as string ?? string.Empty,
+                                    Quantidade = Convert.ToInt32(reader["Quantidade"]),
+                                    DataCadastro = Convert.ToDateTime(reader["DataCadastro"])
                                 };
 
                                 products.Add(product);
@@ -98,9 +100,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                             product = new Product
                             {
                                 Id = Convert.ToInt32(reader["ProductId"]),
-                                Name = reader["Name"] as string ?? string.Empty,
-                                Price = Convert.ToDecimal(reader["Price"]),
-                                RegistrationDate = Convert.ToDateTime(reader["RegistrationDate"])
+                                Nome = reader["Name"] as string ?? string.Empty,
+                                Preco = Convert.ToDecimal(reader["Price"]),
+                                DataCadastro = Convert.ToDateTime(reader["RegistrationDate"])
                             };
                         }
                     }
@@ -118,10 +120,10 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                 {
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.AddWithValue("@NAME", product.Name);
-                    command.Parameters.AddWithValue("@PRICE", product.Price);
-                    command.Parameters.AddWithValue("@EXPIRATION_DATE", product.ExpirationDate);
-                    command.Parameters.AddWithValue("@DESCRIPTION", product.Description);
+                    command.Parameters.AddWithValue("@NAME", product.Nome);
+                    command.Parameters.AddWithValue("@PRICE", product.Preco);
+                    command.Parameters.AddWithValue("@EXPIRATION_DATE", product.DataCadastro);
+                    command.Parameters.AddWithValue("@DESCRIPTION", product.Descricao);
 
                     SqlParameter outputIdParam = new SqlParameter
                     {
@@ -154,8 +156,8 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = product.Id;
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar, 100)).Value = product.Name;
-                    command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)).Value = product.Price;
+                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar, 100)).Value = product.Nome;
+                    command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)).Value = product.Preco;
 
                     connection.Open();
                     command.ExecuteNonQuery();

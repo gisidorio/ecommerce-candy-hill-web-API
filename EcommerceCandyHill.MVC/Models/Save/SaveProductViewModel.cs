@@ -8,12 +8,14 @@ namespace EcommerceCandyHill.MVC.Models.Save
     {
         public Guid Id { get; set; }
 
-        public required string Name { get; set; }
+        public required string Nome { get; set; }
 
-        public string? Description { get; set; }
+        public string? Descricao { get; set; }
 
-        public required string Price { get; set; }
+        public required string Preco { get; set; }
 
-        public required DateTime ExpirationDate { get; set; }
+        public required int Quantidade { get; set; }
+
+        public DateTime? Data_Cadastro { get; set; }
     }
 }

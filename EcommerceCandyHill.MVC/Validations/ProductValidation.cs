@@ -15,16 +15,16 @@ namespace EcommerceCandyHill.Application.Validations
     {
         public ProductValidator()
         {
-            RuleFor(p => p.Name)
+            RuleFor(p => p.Nome)
                 .NotEmpty().WithMessage("O nome do produto é obrigatório")
                 .MinimumLength(3).WithMessage("O nome deve ter pelo ou menos 3 caracteres");
 
-            RuleFor(p => p.Price)
+            RuleFor(p => p.Preco)
                 .NotEmpty().WithMessage("O valor não pode ser zero ou vazio!")
                 .Matches(@"^\d+(\.\d{1,2})?$").WithMessage("O preço deve ser um número decimal válido com até duas casas decimais.");
                 
 
-            RuleFor(p => p.ExpirationDate)
+            RuleFor(p => p.Data_Cadastro)
                 .NotEmpty().WithMessage("O preenchimento do campo data de validade deve ser preenchido!")
                 .GreaterThan(DateTime.Now).WithMessage("A data de validade é obrigatória, deve ser maior que data atual e menor que 31/12/9999!");
             

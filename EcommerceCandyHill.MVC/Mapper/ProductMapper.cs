@@ -11,10 +11,10 @@ namespace EcommerceCandyHill.MVC.Mapper
         {
             return new Product
             {
-                Name = saveProductViewModel.Name,
-                Description = saveProductViewModel.Description,
-                Price = ConversorHelper.ConverterParaDecimal(saveProductViewModel.Price),
-                ExpirationDate = saveProductViewModel.ExpirationDate
+                Nome = saveProductViewModel.Nome,
+                Descricao = saveProductViewModel.Descricao,
+                Preco = ConversorHelper.ConverterParaDecimal(saveProductViewModel.Preco),
+                DataCadastro = saveProductViewModel.Data_Cadastro
             };
         }
     }
