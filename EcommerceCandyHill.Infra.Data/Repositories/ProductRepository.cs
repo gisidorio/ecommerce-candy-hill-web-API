@@ -64,7 +64,8 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                     Preco = Convert.ToDecimal(reader["Preco"]),
                                     Descricao = reader["Descricao"] as string ?? string.Empty,
                                     Quantidade = Convert.ToInt32(reader["Quantidade"]),
-                                    DataCadastro = Convert.ToDateTime(reader["DataCadastro"])
+                                    DataCadastro = Convert.ToDateTime(reader["DataCadastro"]),
+                                    UrlImagem = reader["UrlImagem"] as string ?? string.Empty
                                 };
 
                                 products.Add(product);

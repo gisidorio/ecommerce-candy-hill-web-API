@@ -13,6 +13,7 @@ namespace EcommerceCandyHill.Domain.Entities
         public string? Descricao { get; set; }
         public required decimal Preco { get; set; }
         public int Quantidade { get; set; }
+        public string? UrlImagem { get; set; }
         public DateTime? DataCadastro { get; set; }
     }
 }
