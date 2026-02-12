@@ -1,7 +1,5 @@
 Banco de Dados - CandyHill
 
-Após subir os containers pela primeira vez, o volume `candyhillweb_sql_data` será criado automaticamente, mas **ele não contém a base CandyHill**.
-
 - Restauração da Base
 
 1. Acesse o **SQL Server Management Studio (SSMS)** conectado ao container `sqlserver`.
