@@ -7,9 +7,9 @@ namespace EcommerceCandyHill.MVC.Mapper
 {
     public static class ProductMapper
     {
-        public static Product ConvertViewModelToEntity(SaveProductViewModel saveProductViewModel)
+        public static Produto ConvertViewModelToEntity(SaveProductViewModel saveProductViewModel)
         {
-            return new Product
+            return new Produto
             {
                 Nome = saveProductViewModel.Nome,
                 Descricao = saveProductViewModel.Descricao,

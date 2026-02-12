@@ -362,3 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /EcommerceCandyHill.MVC/Controllers/ProductController.cs
+
+# Arquivos de configuração sensíveis
+.env
+.env.local
+secrets.env
+

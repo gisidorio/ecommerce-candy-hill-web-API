@@ -15,7 +15,7 @@ namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 
         T? GetById(int id);
 
-        void Update(Product product);
+        void Update(Produto product);
 
         void DeleteById(int id);
     }

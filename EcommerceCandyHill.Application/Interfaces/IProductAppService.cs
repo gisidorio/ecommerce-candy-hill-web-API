@@ -9,7 +9,7 @@ namespace EcommerceCandyHill.Application.Interfaces
 {
     public interface IProductAppService
     {
-        int Save(Product product);
-        List<Product> GetAll();
+        int Save(Produto product);
+        List<Produto> GetAll();
     }
 }

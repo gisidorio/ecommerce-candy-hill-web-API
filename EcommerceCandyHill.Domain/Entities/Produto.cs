@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Entities
 {
-    public class Product
+    public class Produto
     {
         public int Id { get; set; }
         public required string Nome { get; set; }

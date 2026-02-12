@@ -22,6 +22,7 @@ builder.Services.AddTransient<IProductAppService, ProductAppService>();
 builder.Services.AddTransient<IProductDomainService, ProductDomainService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IProductValidator, ProductValidator>();
+builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddTransient<IValidator<SaveProductViewModel>, ProductValidator>();
 builder.Services.AddSingleton<DatabaseSettings>();
 

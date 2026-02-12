@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceCandyHill.Services
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.API", "EcommerceCandyHill.API\EcommerceCandyHill.API.csproj", "{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.Tests", "EcommerceCandyHill.Tests\EcommerceCandyHill.Tests.csproj", "{33FAA903-26AD-4080-809C-C628951CA634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

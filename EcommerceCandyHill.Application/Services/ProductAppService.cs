@@ -18,12 +18,12 @@ namespace EcommerceCandyHill.Application.Services
             _productService = productService;
         }
 
-        public List<Product> GetAll()
+        public List<Produto> GetAll()
         {
             return _productService.GetAll();
         }
 
-        public int Save(Product product)
+        public int Save(Produto product)
         {
             return _productService.Save(product);
         }
