@@ -1,15 +1,10 @@
 Banco de Dados - CandyHill
 
-O projeto utiliza o **SQL Server em container Docker**.
-
 Após subir os containers pela primeira vez, o volume `candyhillweb_sql_data` será criado automaticamente, mas **ele não contém a base CandyHill**.
 
 - Restauração da Base
 
 1. Acesse o **SQL Server Management Studio (SSMS)** conectado ao container `sqlserver`.
-   - Servidor: `localhost,1433`
-   - Login: `sa`
-   - Senha: (definida no docker-compose.yml)
 
 2. Faça o **restore** do backup:
    - Vá em *Databases > Restore Database...*
