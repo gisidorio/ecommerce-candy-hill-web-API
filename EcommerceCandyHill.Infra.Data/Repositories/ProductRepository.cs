@@ -187,7 +187,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     var nameParam = command.CreateParameter();
                     nameParam.ParameterName = "@Name";
                     nameParam.DbType = DbType.String;
-                    nameParam.Size = 100; // se o banco limita a 100
+                    nameParam.Size = 100; 
                     nameParam.Value = product.Nome;
                     command.Parameters.Add(nameParam);
 
