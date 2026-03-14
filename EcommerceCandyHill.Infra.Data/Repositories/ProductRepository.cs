@@ -14,7 +14,6 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        //private readonly string _connectionString;
         private readonly IDbConnectionFactory _connectionFactory;
 
         public ProductRepository(IDbConnectionFactory connectionFactory)
@@ -22,14 +21,13 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-
-        public void DeleteById(int id)
+        public void Delete(long id)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "usp_deletete";
+                    command.CommandText = "usp_Product_Delete";
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
@@ -41,9 +39,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             }
         }
 
-        public List<Produto> GetAll()
+        public List<Product> GetAll()
         {
-            List<Produto> products = new List<Produto>();
+            List<Product> products = new List<Product>();
 
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -58,15 +56,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     {
                         while (reader.Read())
                         {
-                            Produto product = new Produto
+                            Product product = new Product
                             {
                                 Id = Convert.ToInt32(reader["Id"]),
-                                Nome = reader["Nome"] as string ?? string.Empty,
-                                Preco = Convert.ToDecimal(reader["Preco"]),
-                                Descricao = reader["Descricao"] as string ?? string.Empty,
-                                Quantidade = Convert.ToInt32(reader["Quantidade"]),
-                                DataCadastro = Convert.ToDateTime(reader["DataCadastro"]),
-                                UrlImagem = reader["UrlImagem"] as string ?? string.Empty
+                                Name = reader["Nome"] as string ?? string.Empty,
+                                Price = Convert.ToDecimal(reader["Price"]),
+                                Quantity = Convert.ToInt32(reader["Quantity"]),
+                                IsActive = Convert.ToBoolean(reader["IsActive"]),
+                                CreatedAt = Convert.ToDateTime(reader["RegistrationDate"]),
                             };
 
                             products.Add(product);
@@ -80,9 +77,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return products;
         }
 
-        public Produto? GetById(int id)
+        public Product? GetById(int id)
         {
-            Produto? product = null;
+            Product? product = null;
 
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -99,12 +96,15 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     {
                         if (reader.Read())
                         {
-                            product = new Produto
+                            product = new Product
                             {
                                 Id = Convert.ToInt32(reader["ProductId"]),
-                                Nome = reader["Name"] as string ?? string.Empty,
-                                Preco = Convert.ToDecimal(reader["Price"]),
-                                DataCadastro = Convert.ToDateTime(reader["RegistrationDate"])
+                                Name = reader["Name"] as string ?? string.Empty,
+                                Price = Convert.ToDecimal(reader["Price"]),
+                                Description = reader["Description"] as string ?? string.Empty,
+                                Quantity = Convert.ToInt32(reader["Quantity"]),
+                                IsActive = Convert.ToBoolean(reader["IsActive"]),
+                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
                             };
                         }
                     }
@@ -114,7 +114,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return product;
         }
 
-        public int Save(Produto product)
+        public long Save(Product product)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -124,32 +124,37 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandType = CommandType.StoredProcedure;
 
                     var nameParam = command.CreateParameter();
-                    nameParam.ParameterName = "@NAME";
+                    nameParam.ParameterName = "@Name";
                     nameParam.DbType = DbType.String;
-                    nameParam.Value = product.Nome;
+                    nameParam.Value = product.Name;
                     command.Parameters.Add(nameParam);
 
                     var priceParam = command.CreateParameter();
-                    priceParam.ParameterName = "@PRICE";
+                    priceParam.ParameterName = "@Price";
                     priceParam.DbType = DbType.Decimal;
-                    priceParam.Value = product.Preco;
+                    priceParam.Value = product.Price;
                     command.Parameters.Add(priceParam);
 
-                    var dateParam = command.CreateParameter();
-                    dateParam.ParameterName = "@EXPIRATION_DATE";
-                    dateParam.DbType = DbType.DateTime;
-                    dateParam.Value = product.DataCadastro;
-                    command.Parameters.Add(dateParam);
+                    var QuantityParameter = command.CreateParameter();
+                    priceParam.ParameterName = "@Quantity";
+                    priceParam.DbType = DbType.Int32;
+                    priceParam.Value = product.Quantity;
+                    command.Parameters.Add(QuantityParameter);
 
                     var descParam = command.CreateParameter();
-                    descParam.ParameterName = "@DESCRIPTION";
+                    descParam.ParameterName = "@Description";
                     descParam.DbType = DbType.String;
-                    descParam.Value = product.Descricao ?? string.Empty;
+                    descParam.Value = product.Description ?? string.Empty;
                     command.Parameters.Add(descParam);
 
-                    // Parâmetro de saída
+                    var isActiveParam = command.CreateParameter();
+                    descParam.ParameterName = "@IsActive";
+                    descParam.DbType = DbType.Boolean;
+                    descParam.Value = product.IsActive;
+                    command.Parameters.Add(isActiveParam);
+
                     var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@ID";
+                    outputIdParam.ParameterName = "@Id";
                     outputIdParam.DbType = DbType.Int32;
                     outputIdParam.Direction = ParameterDirection.Output;
                     command.Parameters.Add(outputIdParam);
@@ -167,36 +172,51 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return product.Id;
         }
 
-        public void Update(Produto product)
+        public void Update(Product product)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "usp_UpdateProduct";
+                    command.CommandText = "usp_Product_Update";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    // Parâmetro @Id
                     var idParam = command.CreateParameter();
                     idParam.ParameterName = "@Id";
                     idParam.DbType = DbType.Int32;
                     idParam.Value = product.Id;
                     command.Parameters.Add(idParam);
 
-                    // Parâmetro @Name
                     var nameParam = command.CreateParameter();
                     nameParam.ParameterName = "@Name";
                     nameParam.DbType = DbType.String;
                     nameParam.Size = 100; 
-                    nameParam.Value = product.Nome;
+                    nameParam.Value = product.Name;
                     command.Parameters.Add(nameParam);
 
-                    // Parâmetro @Price
                     var priceParam = command.CreateParameter();
                     priceParam.ParameterName = "@Price";
                     priceParam.DbType = DbType.Decimal;
-                    priceParam.Value = product.Preco;
+                    priceParam.Value = product.Price;
                     command.Parameters.Add(priceParam);
+
+                    var QuantityParameter = command.CreateParameter();
+                    priceParam.ParameterName = "@Quantity";
+                    priceParam.DbType = DbType.Int32;
+                    priceParam.Value = product.Quantity;
+                    command.Parameters.Add(QuantityParameter);
+
+                    var descParam = command.CreateParameter();
+                    descParam.ParameterName = "@Description";
+                    descParam.DbType = DbType.String;
+                    descParam.Value = product.Description ?? string.Empty;
+                    command.Parameters.Add(descParam);
+
+                    var isActiveParam = command.CreateParameter();
+                    descParam.ParameterName = "@IsActive";
+                    descParam.DbType = DbType.Boolean;
+                    descParam.Value = product.IsActive;
+                    command.Parameters.Add(isActiveParam);
 
                     connection.Open();
                     command.ExecuteNonQuery();

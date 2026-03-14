@@ -9,14 +9,14 @@ namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
     public interface IBaseRepository<T>
     {
-        int Save(T product);
+        long Save(T product);
 
         List<T> GetAll();
 
         T? GetById(int id);
 
-        void Update(Produto product);
+        void Update(Product product);
 
-        void DeleteById(int id);
+        void Delete(long id);
     }
 }

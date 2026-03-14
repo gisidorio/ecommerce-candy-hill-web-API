@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
-    public interface IProductRepository : IBaseRepository<Product>
+    public interface IUserRepository : IBaseRepository<User>
     {
 
     }

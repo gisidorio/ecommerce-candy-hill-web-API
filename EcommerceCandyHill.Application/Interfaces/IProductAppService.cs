@@ -1,4 +1,6 @@
-﻿using EcommerceCandyHill.Domain.Entities;
+﻿using EcommerceCandyHill.Application.Commands.Product;
+using EcommerceCandyHill.Application.Validators;
+using EcommerceCandyHill.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +11,8 @@ namespace EcommerceCandyHill.Application.Interfaces
 {
     public interface IProductAppService
     {
-        int Save(Produto product);
-        List<Produto> GetAll();
+        ValidationResult Save(CreateProductCommand command);
+        List<Product> GetAll();
+        ValidationResult Update(UpdateProductCommand command);
     }
 }

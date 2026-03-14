@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Services.Interfaces
 {
-    public interface IProductService
+    public interface IUserService
     {
-        int Save(Produto product);
-        List<Produto> GetAll();
+        int Save(User user);
+        List<User> GetAll();
     }
 }

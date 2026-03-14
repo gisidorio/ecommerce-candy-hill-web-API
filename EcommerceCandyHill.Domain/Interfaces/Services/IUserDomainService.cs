@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
-    public interface IProductDomainService
+    public interface IUserDomainService
     {
-        long Save(Product product);
-        List<Product> GetAll();
-        void Update(Product product);
-        void Delete(long id);
+        int Save(User user);
+        List<User> GetAll();
     }
 }

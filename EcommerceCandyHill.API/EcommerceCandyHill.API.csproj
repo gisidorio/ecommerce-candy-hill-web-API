@@ -11,8 +11,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\EcommerceCandyHill.Application\EcommerceCandyHill.Application.csproj" />
 		<ProjectReference Include="..\EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj" />
-		<ProjectReference Include="..\EcommerceCandyHill.Services\EcommerceCandyHill.Services.csproj" />
 	</ItemGroup>
 
 </Project>

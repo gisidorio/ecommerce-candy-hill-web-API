@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Services.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IProductApplicationService
     {
         private readonly IProductAppService _productAppService;
 

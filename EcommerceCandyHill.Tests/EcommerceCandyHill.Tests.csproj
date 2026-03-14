@@ -21,7 +21,6 @@
   <ItemGroup>
     <ProjectReference Include="..\EcommerceCandyHill.API\EcommerceCandyHill.API.csproj" />
     <ProjectReference Include="..\EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj" />
-    <ProjectReference Include="..\EcommerceCandyHill.Services\EcommerceCandyHill.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Domain.Interfaces.Repositories
+namespace EcommerceCandyHill.Services.Interfaces
 {
-    public interface IProductRepository : IBaseRepository<Product>
+    public interface IProductApplicationService
     {
-
+        int Save(Produto product);
+        List<Produto> GetAll();
     }
 }
