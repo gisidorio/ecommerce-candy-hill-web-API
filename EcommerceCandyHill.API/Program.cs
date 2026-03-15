@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
+
 builder.Services.AddTransient<IProductAppService, ProductAppService>();
 builder.Services.AddTransient<IProductDomainService, ProductDomainService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
@@ -30,11 +32,6 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:4200") 
             .AllowAnyHeader()
             .AllowAnyMethod());
-});
-
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(80); 
 });
 
 
