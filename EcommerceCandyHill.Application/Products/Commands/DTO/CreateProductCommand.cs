@@ -4,16 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Domain.Entities
+namespace EcommerceCandyHill.Application.Products.Commands.DTO
 {
-    public class Product
+    public class CreateProductCommand
     {
-        public long Id { get; set; }
         public required string Name { get; set; }
-        public required decimal Price { get; set; }
+        public decimal Price { get; set; }
         public int Quantity { get; set; }
-        public string? Description { get; set; }
+        public required string Description { get; set; }
         public required bool IsActive { get; set; }
-        public DateTime? CreatedAt { get; set; }
     }
 }

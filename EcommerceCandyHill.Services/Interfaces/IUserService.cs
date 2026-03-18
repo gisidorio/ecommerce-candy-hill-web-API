@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Interfaces
+namespace EcommerceCandyHill.Services.Interfaces
 {
-    public interface IProductAppService
+    public interface IUserService
     {
-        int Save(Product product);
-        List<Product> GetAll();
+        int Save(User user);
+        List<User> GetAll();
     }
 }

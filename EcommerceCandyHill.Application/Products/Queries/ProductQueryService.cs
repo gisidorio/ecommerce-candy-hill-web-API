@@ -1,5 +1,4 @@
-﻿using EcommerceCandyHill.Application.Interfaces;
-using EcommerceCandyHill.Domain.Entities;
+﻿using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
@@ -7,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Services
+namespace EcommerceCandyHill.Application.Products.Queries
 {
-    public class ProductAppService : IProductAppService
+    public class ProductQueryService : IProductQueryService
     {
         private readonly IProductDomainService _productService;
 
-        public ProductAppService(IProductDomainService productService) 
+        public ProductQueryService(IProductDomainService productService)
         {
             _productService = productService;
         }
@@ -21,11 +20,6 @@ namespace EcommerceCandyHill.Application.Services
         public List<Product> GetAll()
         {
             return _productService.GetAll();
-        }
-
-        public int Save(Product product)
-        {
-            return _productService.Save(product);
         }
     }
 }

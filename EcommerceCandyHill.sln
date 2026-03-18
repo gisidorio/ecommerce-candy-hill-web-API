@@ -1,27 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.0.11104.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37027.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Presentation", "1 - Presentation", "{D2C460CD-1A41-4EEA-A3B7-D325FAC6919D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Services", "2 - Services", "{E270F06E-8E88-47C2-9C7F-92F6B15E31A2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Application", "2 - Application", "{A233E5C5-CFD8-496C-B706-81784BC6C32D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Application", "3 - Application", "{A233E5C5-CFD8-496C-B706-81784BC6C32D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Domain", "3 - Domain", "{6D52A500-B085-4C0E-8826-D8C404E5BCFF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Domain", "4 - Domain", "{6D52A500-B085-4C0E-8826-D8C404E5BCFF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Infrastructure", "5 - Infrastructure", "{D0903CCD-BB51-4C27-811E-673E8C2B2872}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceCandyHill.Domain", "EcommerceCandyHill.Domain\EcommerceCandyHill.Domain.csproj", "{29A89A4F-23B0-431F-B4E0-402EAC68E077}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceCandyHill.Infra.Data", "EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj", "{5AB0F467-6B75-4207-9A6C-9AE77D147958}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceCandyHill.Application", "EcommerceCandyHill.Application\EcommerceCandyHill.Application.csproj", "{5957A665-884F-4639-8918-73E156B1017E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcommerceCandyHill.Services", "EcommerceCandyHill.Services\EcommerceCandyHill.Services.csproj", "{E6313DBE-FBA5-4260-8833-AA63AB4DAF23}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Infrastructure", "4 - Infrastructure", "{D0903CCD-BB51-4C27-811E-673E8C2B2872}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.API", "EcommerceCandyHill.API\EcommerceCandyHill.API.csproj", "{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.Tests", "EcommerceCandyHill.Tests\EcommerceCandyHill.Tests.csproj", "{33FAA903-26AD-4080-809C-C628951CA634}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.Application", "EcommerceCandyHill.Application\EcommerceCandyHill.Application.csproj", "{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.Domain", "EcommerceCandyHill.Domain\EcommerceCandyHill.Domain.csproj", "{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcommerceCandyHill.Infra.Data", "EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj", "{E0C18430-F9B1-F2FD-C593-20E28482C168}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,36 +27,35 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{29A89A4F-23B0-431F-B4E0-402EAC68E077}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29A89A4F-23B0-431F-B4E0-402EAC68E077}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29A89A4F-23B0-431F-B4E0-402EAC68E077}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29A89A4F-23B0-431F-B4E0-402EAC68E077}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5AB0F467-6B75-4207-9A6C-9AE77D147958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5AB0F467-6B75-4207-9A6C-9AE77D147958}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5AB0F467-6B75-4207-9A6C-9AE77D147958}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5AB0F467-6B75-4207-9A6C-9AE77D147958}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5957A665-884F-4639-8918-73E156B1017E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5957A665-884F-4639-8918-73E156B1017E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5957A665-884F-4639-8918-73E156B1017E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5957A665-884F-4639-8918-73E156B1017E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E6313DBE-FBA5-4260-8833-AA63AB4DAF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6313DBE-FBA5-4260-8833-AA63AB4DAF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6313DBE-FBA5-4260-8833-AA63AB4DAF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6313DBE-FBA5-4260-8833-AA63AB4DAF23}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FAA903-26AD-4080-809C-C628951CA634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0C18430-F9B1-F2FD-C593-20E28482C168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0C18430-F9B1-F2FD-C593-20E28482C168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0C18430-F9B1-F2FD-C593-20E28482C168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0C18430-F9B1-F2FD-C593-20E28482C168}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{29A89A4F-23B0-431F-B4E0-402EAC68E077} = {6D52A500-B085-4C0E-8826-D8C404E5BCFF}
-		{5AB0F467-6B75-4207-9A6C-9AE77D147958} = {D0903CCD-BB51-4C27-811E-673E8C2B2872}
-		{5957A665-884F-4639-8918-73E156B1017E} = {A233E5C5-CFD8-496C-B706-81784BC6C32D}
-		{E6313DBE-FBA5-4260-8833-AA63AB4DAF23} = {E270F06E-8E88-47C2-9C7F-92F6B15E31A2}
 		{CF7CC39A-FAB5-66F5-56A7-3FE8AB530BAD} = {D2C460CD-1A41-4EEA-A3B7-D325FAC6919D}
+		{66D14F81-80A6-BA2A-00C1-1AEACE75F2AB} = {A233E5C5-CFD8-496C-B706-81784BC6C32D}
+		{3AF40262-4DD7-C2A1-0CCC-E7FCCAA396B9} = {6D52A500-B085-4C0E-8826-D8C404E5BCFF}
+		{E0C18430-F9B1-F2FD-C593-20E28482C168} = {D0903CCD-BB51-4C27-811E-673E8C2B2872}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9F84D92-C4D7-413F-8165-D35EBAD9A6FD}

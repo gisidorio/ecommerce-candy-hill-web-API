@@ -4,15 +4,18 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<UserSecretsId>6eec2dc4-e482-49e7-a554-cc457d8a8cd8</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\EcommerceCandyHill.Application\EcommerceCandyHill.Application.csproj" />
 		<ProjectReference Include="..\EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj" />
-		<ProjectReference Include="..\EcommerceCandyHill.Services\EcommerceCandyHill.Services.csproj" />
 	</ItemGroup>
 
 </Project>

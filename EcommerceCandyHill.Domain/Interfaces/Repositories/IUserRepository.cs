@@ -7,16 +7,8 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
-    public interface IBaseRepository<T>
+    public interface IUserRepository : IBaseRepository<User>
     {
-        long Save(T product);
 
-        List<T> GetAll();
-
-        T? GetById(int id);
-
-        void Update(Product product);
-
-        void Delete(int id);
     }
 }

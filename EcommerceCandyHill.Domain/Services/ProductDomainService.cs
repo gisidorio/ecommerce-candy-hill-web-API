@@ -13,19 +13,34 @@ namespace EcommerceCandyHill.Domain.Services
     {
         private readonly IProductRepository _productRepository;
 
-        public ProductDomainService(IProductRepository productRepository) 
+        public ProductDomainService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
 
-        public int Save(Product product)
+        public long Save(Product product)
         {
             return _productRepository.Save(product);
         }
 
-        public List<Product> GetAll() 
+        public List<Product> GetAll()
         {
             return _productRepository.GetAll();
+        }
+
+        public void Update(Product product)
+        {
+            _productRepository.Update(product);
+        }
+
+        public void Delete(int id)
+        {
+            _productRepository.Delete(id);
+        }
+
+        public Product? GetById(int id)
+        {
+            return _productRepository.GetById(id);
         }
     }
 }

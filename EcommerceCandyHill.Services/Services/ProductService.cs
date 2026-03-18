@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Services.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IProductApplicationService
     {
         private readonly IProductAppService _productAppService;
 
@@ -19,12 +19,12 @@ namespace EcommerceCandyHill.Services.Services
             _productAppService = productAppService;
         }
 
-        public List<Product> GetAll()
+        public List<Produto> GetAll()
         {
             return _productAppService.GetAll();
         }
 
-        public int Save(Product product)
+        public int Save(Produto product)
         {
             return _productAppService.Save(product);
         }
