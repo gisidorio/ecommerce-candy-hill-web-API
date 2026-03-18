@@ -53,15 +53,18 @@ namespace EcommerceCandyHill.MVC.Controllers
             return Ok();
         }
 
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(long id)
-        //{
-        //    var result = _productAppService.Delete(id);
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id, DeleteProductCommand command)
+        {
+            if (id != command.Id)
+                return BadRequest("O id do produto é diferente do id informado na rota.");
 
-        //    if (!result.IsValid)
-        //        return BadRequest(result.Message);
+            var result = _productAppService.Delete(command);
 
-        //    return Ok();
-        //}
+            if (!result.IsValid)
+                return BadRequest(result.Message);
+
+            return Ok();
+        }
     }
 }

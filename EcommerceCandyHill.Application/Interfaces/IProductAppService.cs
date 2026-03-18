@@ -14,5 +14,6 @@ namespace EcommerceCandyHill.Application.Interfaces
         ValidationResult Save(CreateProductCommand command);
         List<Product> GetAll();
         ValidationResult Update(UpdateProductCommand command);
+        ValidationResult Delete(DeleteProductCommand command);
     }
 }

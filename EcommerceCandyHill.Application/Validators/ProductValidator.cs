@@ -64,7 +64,13 @@ namespace EcommerceCandyHill.Application.Validators
         {
             var validationResult = new ValidationResult();
 
-            if (command.Id == 0)
+            if (command == null)
+            {
+                validationResult.AddError("O objeto de produto não pode ser nulo.");
+                return validationResult;
+            }
+
+            if (command.Id <= 0)
                 validationResult.AddError("Id do produto é obrigatório.");
 
             return validationResult;
