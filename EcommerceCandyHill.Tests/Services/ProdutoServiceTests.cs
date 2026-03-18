@@ -1,4 +1,4 @@
-﻿using EcommerceCandyHill.Application.Interfaces;
+﻿using EcommerceCandyHill.Application.Products.Commands;
 using EcommerceCandyHill.Domain.Entities;
 using FluentAssertions;
 using Moq;
@@ -12,12 +12,12 @@ namespace EcommerceCandyHill.Tests.Services
 {
     public class ProdutoServiceTests
     {
-        private readonly Mock<IProductAppService> _mockProductAppService;
+        private readonly Mock<IProductCommandService> _mockProductAppService;
         //private readonly ProductService _productService;
 
         public ProdutoServiceTests()
         {
-            _mockProductAppService = new Mock<IProductAppService>();
+            _mockProductAppService = new Mock<IProductCommandService>();
             //_productService = new ProductService(_mockProductAppService.Object);
         }
 

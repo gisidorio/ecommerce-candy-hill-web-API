@@ -1,4 +1,4 @@
-﻿using EcommerceCandyHill.Application.Commands.Product;
+﻿using EcommerceCandyHill.Application.Products.Commands.DTO;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Domain.Entities;
 using System;
@@ -7,12 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Interfaces
+namespace EcommerceCandyHill.Application.Products.Commands
 {
-    public interface IProductAppService
+    public interface IProductCommandService
     {
         ValidationResult Save(CreateProductCommand command);
-        List<Product> GetAll();
         ValidationResult Update(UpdateProductCommand command);
         ValidationResult Delete(DeleteProductCommand command);
     }

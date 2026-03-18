@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EcommerceCandyHill.Application.Commands.Product;
+using EcommerceCandyHill.Application.Products.Commands.DTO;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 
 namespace EcommerceCandyHill.Application.Validators

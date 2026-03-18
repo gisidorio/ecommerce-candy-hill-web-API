@@ -1,5 +1,4 @@
-﻿using EcommerceCandyHill.Application.Commands.Product;
-using EcommerceCandyHill.Application.Interfaces;
+﻿using EcommerceCandyHill.Application.Products.Commands.DTO;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 using EcommerceCandyHill.Domain.Entities;
@@ -11,23 +10,19 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Services
+namespace EcommerceCandyHill.Application.Products.Commands
 {
-    public class ProductAppService : IProductAppService
+    public class ProductCommandService : IProductCommandService
     {
         private readonly IProductDomainService _productService;
         private readonly IProductValidator _productValidator;
 
-        public ProductAppService(IProductDomainService productService, IProductValidator productValidator)
+        public ProductCommandService(IProductDomainService productService, IProductValidator productValidator)
         {
             _productService = productService;
             _productValidator = productValidator;
         }
 
-        public List<Product> GetAll()
-        {
-            return _productService.GetAll();
-        }
 
         public ValidationResult Save(CreateProductCommand command)
         {

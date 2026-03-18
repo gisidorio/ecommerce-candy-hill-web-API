@@ -1,7 +1,8 @@
-﻿using EcommerceCandyHill.Application.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using EcommerceCandyHill.Application.Validators.Interfaces;
-using EcommerceCandyHill.Application.Commands.Product;
+using EcommerceCandyHill.Application.Products.Commands;
+using EcommerceCandyHill.Application.Products.Commands.DTO;
+using EcommerceCandyHill.Application.Products.Queries;
 
 namespace EcommerceCandyHill.MVC.Controllers
 {
@@ -9,17 +10,20 @@ namespace EcommerceCandyHill.MVC.Controllers
     [Route("api/[Controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductAppService _productAppService;
+        private readonly IProductCommandService _productAppService;
+        private readonly IProductQueryService _productQueryService;
 
-        public ProductController(IProductAppService productAppService, IProductValidator productValidator)
+
+        public ProductController(IProductCommandService productAppService, IProductQueryService productQueryService)
         {
             _productAppService = productAppService;
+            _productQueryService = productQueryService;
         }
 
         [HttpGet]
         public IActionResult GetAll()
         {
-            var products = _productAppService.GetAll();
+            var products = _productQueryService.GetAll();
 
             if (!products.Any())
                 return NoContent();

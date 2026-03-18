@@ -1,4 +1,4 @@
-﻿using EcommerceCandyHill.Application.Commands.Product;
+﻿using EcommerceCandyHill.Application.Products.Commands.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

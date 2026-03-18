@@ -14,8 +14,4 @@
     <ProjectReference Include="..\EcommerceCandyHill.Domain\EcommerceCandyHill.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Queries\" />
-  </ItemGroup>
-
 </Project>

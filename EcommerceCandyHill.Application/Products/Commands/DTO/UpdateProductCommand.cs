@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Commands.Product
+namespace EcommerceCandyHill.Application.Products.Commands.DTO
 {
     public class UpdateProductCommand
     {
