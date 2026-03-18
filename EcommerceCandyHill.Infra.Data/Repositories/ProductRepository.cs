@@ -21,7 +21,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -63,7 +63,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                                 Price = Convert.ToDecimal(reader["Price"]),
                                 Quantity = Convert.ToInt32(reader["Quantity"]),
                                 IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["RegistrationDate"]),
+                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
                             };
 
                             products.Add(product);
@@ -85,7 +85,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "usp_GetProductById";
+                    command.CommandText = "OBTER_PRODUTO_POR_ID";
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
@@ -98,7 +98,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             product = new Product
                             {
-                                Id = Convert.ToInt32(reader["ProductId"]),
+                                Id = Convert.ToInt32(reader["Id"]),
                                 Name = reader["Name"] as string ?? string.Empty,
                                 Price = Convert.ToDecimal(reader["Price"]),
                                 Description = reader["Description"] as string ?? string.Empty,

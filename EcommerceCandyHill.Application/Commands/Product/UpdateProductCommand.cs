@@ -8,7 +8,7 @@ namespace EcommerceCandyHill.Application.Commands.Product
 {
     public class UpdateProductCommand
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         public required string Name { get; set; }
 

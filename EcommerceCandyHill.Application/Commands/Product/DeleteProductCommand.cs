@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.Commands.Product
 {
     public class DeleteProductCommand
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
     }
 }

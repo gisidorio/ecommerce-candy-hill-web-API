@@ -12,6 +12,7 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
         long Save(Product product);
         List<Product> GetAll();
         void Update(Product product);
-        void Delete(long id);
+        void Delete(int id);
+        Product? GetById(int id);
     }
 }

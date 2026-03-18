@@ -39,9 +39,8 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] UpdateProductCommand command)
+        public IActionResult Update(int id, [FromBody] UpdateProductCommand command)
         {
-
             if (id != command.Id)
                 return BadRequest("O id do produto é diferente do id informado na rota.");
 
@@ -54,10 +53,9 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id, DeleteProductCommand command)
+        public IActionResult Delete(int id)
         {
-            if (id != command.Id)
-                return BadRequest("O id do produto é diferente do id informado na rota.");
+            var command = new DeleteProductCommand { Id = id };
 
             var result = _productAppService.Delete(command);
 

@@ -57,7 +57,15 @@ namespace EcommerceCandyHill.Application.Services
             if (!validation.IsValid)
                 return validation;
 
-            var product = new Product
+            var product = _productService.GetById(command.Id);
+
+            if (product == null)
+            {
+                validation.AddError("Produto não encontrado.");
+                return validation;
+            }
+
+            var productUpdate = new Product
             {
                 Id = command.Id,
                 Name = command.Name,
@@ -67,17 +75,29 @@ namespace EcommerceCandyHill.Application.Services
                 IsActive = command.IsActive
             };
 
-            _productService.Update(product);
+            _productService.Update(productUpdate);
 
             return validation;
         }
 
         public ValidationResult Delete(DeleteProductCommand command)
-        {
+        {            
             var validation = _productValidator.Validate(command);
 
-            if (!validation.IsValid)
+            var product = _productService.GetById(command.Id);
+
+            if (product == null)
+            {
+                validation.AddError("Produto não encontrado.");
                 return validation;
+            }
+            if (!product.IsActive)
+            {
+                validation.AddError("Produto já está inativo.");
+            }
+
+            if (!validation.IsValid)
+                return validation;            
 
             _productService.Delete(command.Id);
             return validation;

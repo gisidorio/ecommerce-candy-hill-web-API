@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             throw new NotImplementedException();
         }

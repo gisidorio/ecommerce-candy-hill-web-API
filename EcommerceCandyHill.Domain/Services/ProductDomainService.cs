@@ -33,9 +33,14 @@ namespace EcommerceCandyHill.Domain.Services
             _productRepository.Update(product);
         }
 
-        public void Delete(long id)
+        public void Delete(int id)
         {
             _productRepository.Delete(id);
+        }
+
+        public Product? GetById(int id)
+        {
+            return _productRepository.GetById(id);
         }
     }
 }
