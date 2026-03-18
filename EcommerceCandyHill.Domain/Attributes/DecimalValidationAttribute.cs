@@ -13,7 +13,7 @@ namespace EcommerceCandyHill.Domain.Attributes
         {
             if (value == null || string.IsNullOrEmpty(value.ToString()))
             {
-                return ValidationResult.Success; // Aceita valores nulos ou vazios
+                return ValidationResult.Success;
             }
 
             if (decimal.TryParse(value.ToString(), out _))

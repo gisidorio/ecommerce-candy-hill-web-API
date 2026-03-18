@@ -1,4 +1,5 @@
 using EcommerceCandyHill.Application.Products.Commands;
+using EcommerceCandyHill.Application.Products.Queries;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 using EcommerceCandyHill.Domain.Interfaces.Repositories;
@@ -15,10 +16,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
+#region Dependency Injection for Products
+
+builder.Services.AddTransient<IProductQueryService, ProductQueryService>();
 builder.Services.AddTransient<IProductCommandService, ProductCommandService>();
 builder.Services.AddTransient<IProductDomainService, ProductDomainService>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IProductValidator, ProductValidator>();
+
+#endregion
+
+
+
+#region Dependency Injection for Product Images
+
+builder.Services.AddTransient<IProductImageDomainService, ProductImageDomainService>();
+builder.Services.AddTransient<IProductImageRepository, ProductImageRepository>();
+
+#endregion
+
 builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddSingleton<DatabaseSettings>();
 

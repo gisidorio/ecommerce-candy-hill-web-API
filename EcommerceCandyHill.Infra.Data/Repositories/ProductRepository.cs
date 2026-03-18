@@ -21,7 +21,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Delete(int id)
+        public void Deactivate(int id)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -114,7 +114,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return product;
         }
 
-        public long Save(Product product)
+        public int Save(Product product)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {

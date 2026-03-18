@@ -94,7 +94,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
             if (!validation.IsValid)
                 return validation;            
 
-            _productService.Delete(command.Id);
+            _productService.Deactivate(command.Id);
             return validation;
         }
     }

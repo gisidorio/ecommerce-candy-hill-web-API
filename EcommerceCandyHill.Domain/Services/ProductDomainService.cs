@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _productRepository = productRepository;
         }
 
-        public long Save(Product product)
+        public int Save(Product product)
         {
             return _productRepository.Save(product);
         }
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.Domain.Services
             _productRepository.Update(product);
         }
 
-        public void Delete(int id)
+        public void Deactivate(int id)
         {
-            _productRepository.Delete(id);
+            _productRepository.Deactivate(id);
         }
 
         public Product? GetById(int id)
