@@ -59,6 +59,7 @@ namespace EcommerceCandyHill.Application.Services
 
             var product = new Product
             {
+                Id = command.Id,
                 Name = command.Name,
                 Price = command.Price,
                 Quantity = command.Quantity,

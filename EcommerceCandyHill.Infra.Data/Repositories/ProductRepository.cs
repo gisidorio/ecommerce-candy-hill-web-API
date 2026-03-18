@@ -201,9 +201,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.Parameters.Add(priceParam);
 
                     var QuantityParameter = command.CreateParameter();
-                    priceParam.ParameterName = "@Quantity";
-                    priceParam.DbType = DbType.Int32;
-                    priceParam.Value = product.Quantity;
+                    QuantityParameter.ParameterName = "@Quantity";
+                    QuantityParameter.DbType = DbType.Int32;
+                    QuantityParameter.Value = product.Quantity;
                     command.Parameters.Add(QuantityParameter);
 
                     var descParam = command.CreateParameter();
@@ -213,9 +213,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.Parameters.Add(descParam);
 
                     var isActiveParam = command.CreateParameter();
-                    descParam.ParameterName = "@IsActive";
-                    descParam.DbType = DbType.Boolean;
-                    descParam.Value = product.IsActive;
+                    isActiveParam.ParameterName = "@IsActive";
+                    isActiveParam.DbType = DbType.Boolean;
+                    isActiveParam.Value = product.IsActive;
                     command.Parameters.Add(isActiveParam);
 
                     connection.Open();
