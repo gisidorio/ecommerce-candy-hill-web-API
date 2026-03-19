@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Application.Validators.Interfaces
 {
-    internal interface IProductImageValidator
+    public interface IProductImageValidator
     {
         ValidationResult Validate(CreateProductImageCommand command);
         ValidationResult Validate(UpdateProductImageCommand command);
-        ValidationResult Validate(int id);
+        ValidationResult Validate(DeleteProductImageCommand command);
 
     }
 }

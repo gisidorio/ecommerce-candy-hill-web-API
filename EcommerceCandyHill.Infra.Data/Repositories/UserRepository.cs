@@ -33,7 +33,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public long Save(User user)
+        public int Save(User user)
         {
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -85,7 +85,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return user.Id;
         }
 
-        public void Update(Product product)
+        public void Update(User entity)
         {
             throw new NotImplementedException();
         }

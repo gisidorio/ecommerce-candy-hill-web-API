@@ -18,4 +18,8 @@
 		<ProjectReference Include="..\EcommerceCandyHill.Infra.Data\EcommerceCandyHill.Infra.Data.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\products\" />
+	</ItemGroup>
+
 </Project>

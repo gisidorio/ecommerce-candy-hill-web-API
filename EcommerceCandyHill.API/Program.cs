@@ -1,3 +1,5 @@
+using EcommerceCandyHill.Application.ProductImages.Commands;
+using EcommerceCandyHill.Application.ProductImages.Queries;
 using EcommerceCandyHill.Application.Products.Commands;
 using EcommerceCandyHill.Application.Products.Queries;
 using EcommerceCandyHill.Application.Validators;
@@ -26,12 +28,13 @@ builder.Services.AddTransient<IProductValidator, ProductValidator>();
 
 #endregion
 
-
-
 #region Dependency Injection for Product Images
 
+builder.Services.AddTransient<IProductImageQueryService, ProductImageQueryService>();
+builder.Services.AddTransient<IProductImageCommandService, ProductImageCommandService>();
 builder.Services.AddTransient<IProductImageDomainService, ProductImageDomainService>();
 builder.Services.AddTransient<IProductImageRepository, ProductImageRepository>();
+builder.Services.AddTransient<IProductImageValidator, ProductImageValidator>();
 
 #endregion
 

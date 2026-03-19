@@ -26,7 +26,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "usp_ProductImage_Delete";
+                    command.CommandText = "usp_ProductImage_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
                     command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
@@ -40,7 +40,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public List<ProductImage> GetAll()
         {
-            List<ProductImage> productImages = new List<ProductImage>();
+            var productImages = new List<ProductImage>();
 
             using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
             {
@@ -55,7 +55,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     {
                         while (reader.Read())
                         {
-                            ProductImage productImage = new ProductImage
+                            var productImage = new ProductImage
                             {
                                 Id = Convert.ToInt32(reader["Id"]),
                                 ProductId = Convert.ToInt32(reader["ProductId"]),
@@ -143,7 +143,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     IsActiveParam.ParameterName = "@IsActive";
                     IsActiveParam.DbType = DbType.Boolean;
                     IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsMainParameter);
+                    command.Parameters.Add(IsActiveParam);
 
                     var outputIdParam = command.CreateParameter();
                     outputIdParam.ParameterName = "@Id";
@@ -194,14 +194,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     var IsMainParameter = command.CreateParameter();
                     IsMainParameter.ParameterName = "@IsMain";
                     IsMainParameter.DbType = DbType.Boolean;
-                    IsMainParameter.Value = entity.IsActive;
+                    IsMainParameter.Value = entity.IsMain;
                     command.Parameters.Add(IsMainParameter);
 
                     var IsActiveParam = command.CreateParameter();
                     IsActiveParam.ParameterName = "@IsActive";
                     IsActiveParam.DbType = DbType.Boolean;
                     IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsMainParameter);
+                    command.Parameters.Add(IsActiveParam);
 
                     connection.Open();
                     command.ExecuteNonQuery();

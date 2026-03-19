@@ -24,9 +24,10 @@ namespace EcommerceCandyHill.Application.Validators
             {
                 validationResult.AddError("A URL da imagem do produto é obrigatória.");
             }
-            else if (!Uri.IsWellFormedUriString(command.ImageUrl, UriKind.Absolute))
+
+            if (command.ProductId <= 0)
             {
-                validationResult.AddError("A URL da imagem do produto é inválida.");
+                validationResult.AddError("O ID do produto deve ser um número positivo.");
             }
 
             return validationResult;
@@ -34,12 +35,41 @@ namespace EcommerceCandyHill.Application.Validators
 
         public ValidationResult Validate(UpdateProductImageCommand command)
         {
-            throw new NotImplementedException();
+            var validationResult = new ValidationResult();
+
+            if (command == null)
+            {
+                validationResult.AddError("Imagem do produto não pode ser null.");
+                return validationResult;
+            }
+
+            if (string.IsNullOrWhiteSpace(command.ImageUrl))
+            {
+                validationResult.AddError("A URL da imagem do produto é obrigatória.");
+            }
+
+            if (command.ProductId <= 0)
+            {
+                validationResult.AddError("O ID do produto deve ser um número positivo.");
+            }
+
+            return validationResult;
         }
 
-        public ValidationResult Validate(int id)
+        public ValidationResult Validate(DeleteProductImageCommand command)
         {
-            throw new NotImplementedException();
+            var validationResult = new ValidationResult();
+
+            if (command == null)
+            {
+                validationResult.AddError("O objeto de imagem não pode ser nulo.");
+                return validationResult;
+            }
+
+            if (command.Id <= 0)
+                validationResult.AddError("Id da imagem é obrigatório.");
+
+            return validationResult;
         }
     }
 }
