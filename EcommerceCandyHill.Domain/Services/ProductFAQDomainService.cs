@@ -1,0 +1,46 @@
+﻿using EcommerceCandyHill.Domain.Entities;
+using EcommerceCandyHill.Domain.Interfaces.Repositories;
+using EcommerceCandyHill.Domain.Interfaces.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EcommerceCandyHill.Domain.Services
+{
+    public class ProductFAQDomainService : IProductFAQDomainService
+    {
+        private readonly IProductFAQRepository _productFAQRepository;
+
+        public ProductFAQDomainService(IProductFAQRepository productFAQRepository)
+        {
+            _productFAQRepository = productFAQRepository;
+        }
+
+        public void Deactivate(int id)
+        {
+            _productFAQRepository.Deactivate(id);
+        }
+
+        public List<ProductFAQ> GetAll()
+        {
+            return _productFAQRepository.GetAll();
+        }
+
+        public ProductFAQ? GetById(int id)
+        {
+            return _productFAQRepository.GetById(id);
+        }
+
+        public int Save(ProductFAQ productFAQ)
+        {
+            return _productFAQRepository.Save(productFAQ);
+        }
+
+        public void Update(ProductFAQ productFAQ)
+        {
+            _productFAQRepository.Update(productFAQ);
+        }
+    }
+}

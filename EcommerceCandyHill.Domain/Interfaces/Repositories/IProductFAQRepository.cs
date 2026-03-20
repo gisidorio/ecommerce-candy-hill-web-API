@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.Interfaces
+namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
-    public interface IUserAppService
+    public interface IProductFAQRepository : IBaseRepository<ProductFAQ>
     {
-        int Save(User user);
-        User GetAll();
     }
 }

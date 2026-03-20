@@ -63,7 +63,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     var RegistrationDateParam = command.CreateParameter();
                     RegistrationDateParam.ParameterName = "@RegistrationDate";
                     RegistrationDateParam.DbType = DbType.DateTime;
-                    RegistrationDateParam.Value = user.RegistrationDate;
+                    RegistrationDateParam.Value = user.CreatedAt;
                     command.Parameters.Add(RegistrationDateParam);
 
                     var outputIdParam = command.CreateParameter();

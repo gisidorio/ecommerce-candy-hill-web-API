@@ -1,3 +1,5 @@
+using EcommerceCandyHill.Application.ProductFAQs.Commands;
+using EcommerceCandyHill.Application.ProductFAQs.Queries;
 using EcommerceCandyHill.Application.ProductImages.Commands;
 using EcommerceCandyHill.Application.ProductImages.Queries;
 using EcommerceCandyHill.Application.Products.Commands;
@@ -47,6 +49,16 @@ builder.Services.AddTransient<ITagCommandService, TagCommandService>();
 builder.Services.AddTransient<ITagDomainService, TagDomainService>();
 builder.Services.AddTransient<ITagRepository, TagRepository>();
 builder.Services.AddTransient<ITagValidator, TagValidator>();
+
+#endregion
+
+#region Dependency Injection for Product FAQs
+
+builder.Services.AddTransient<IProductFAQQueryService, ProductFAQQueryService>();
+builder.Services.AddTransient<IProductFAQCommandService, ProductFAQCommandService>();
+builder.Services.AddTransient<IProductFAQDomainService, ProductFAQDomainService>();
+builder.Services.AddTransient<IProductFAQRepository, ProductFAQRepository>();
+builder.Services.AddTransient<IProductFAQValidator, ProductFAQValidator>();
 
 #endregion
 
