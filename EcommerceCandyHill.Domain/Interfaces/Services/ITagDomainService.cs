@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
-    public interface IProductDomainService
+    public interface ITagDomainService
     {
-        int Save(Product product);
-        List<Product> GetAll();
-        void Update(Product product);
+        int Save(Tag tag);
+        List<Tag> GetAll();
+        void Update(Tag tag);
         void Deactivate(int id);
-        Product? GetById(int id);
-        void AddTagsToProduct(int productId, IEnumerable<int> tagIds);
+        Tag? GetById(int id);
     }
 }

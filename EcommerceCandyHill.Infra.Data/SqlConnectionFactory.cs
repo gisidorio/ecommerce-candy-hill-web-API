@@ -17,7 +17,7 @@ namespace EcommerceCandyHill.Infra.Data
             _connectionString = databaseSettings.ConnectionString;
         }
 
-        public IDbConnection CriarConexaoBaseDeDados()
+        public IDbConnection CreateDatabaseConnection()
         {
             return new SqlConnection(_connectionString);
         }

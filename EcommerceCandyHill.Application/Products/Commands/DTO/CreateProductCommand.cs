@@ -13,5 +13,6 @@ namespace EcommerceCandyHill.Application.Products.Commands.DTO
         public int Quantity { get; set; }
         public required string Description { get; set; }
         public required bool IsActive { get; set; }
+        public required IEnumerable<int> TagIds { get; set; }
     }
 }

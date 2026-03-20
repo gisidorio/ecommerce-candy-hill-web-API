@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
-    public interface IProductRepository : IBaseRepository<Product>
+    public interface ITagRepository : IBaseRepository<Tag>
     {
-        void AddTagsToProduct(int productId, IEnumerable<int> tagIds);
     }
 }

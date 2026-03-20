@@ -2,6 +2,8 @@ using EcommerceCandyHill.Application.ProductImages.Commands;
 using EcommerceCandyHill.Application.ProductImages.Queries;
 using EcommerceCandyHill.Application.Products.Commands;
 using EcommerceCandyHill.Application.Products.Queries;
+using EcommerceCandyHill.Application.Tags.Commands;
+using EcommerceCandyHill.Application.Tags.Queries;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 using EcommerceCandyHill.Domain.Interfaces.Repositories;
@@ -35,6 +37,16 @@ builder.Services.AddTransient<IProductImageCommandService, ProductImageCommandSe
 builder.Services.AddTransient<IProductImageDomainService, ProductImageDomainService>();
 builder.Services.AddTransient<IProductImageRepository, ProductImageRepository>();
 builder.Services.AddTransient<IProductImageValidator, ProductImageValidator>();
+
+#endregion
+
+#region Dependency Injection for Tags
+
+builder.Services.AddTransient<ITagQueryService, TagQueryService>();
+builder.Services.AddTransient<ITagCommandService, TagCommandService>();
+builder.Services.AddTransient<ITagDomainService, TagDomainService>();
+builder.Services.AddTransient<ITagRepository, TagRepository>();
+builder.Services.AddTransient<ITagValidator, TagValidator>();
 
 #endregion
 

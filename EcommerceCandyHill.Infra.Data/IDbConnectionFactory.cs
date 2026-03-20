@@ -10,6 +10,6 @@ namespace EcommerceCandyHill.Infra.Data
 {
     public interface IDbConnectionFactory
     {
-        IDbConnection CriarConexaoBaseDeDados();
+        IDbConnection CreateDatabaseConnection();
     }
 }

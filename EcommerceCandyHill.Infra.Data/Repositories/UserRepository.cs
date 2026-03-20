@@ -35,7 +35,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public int Save(User user)
         {
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {

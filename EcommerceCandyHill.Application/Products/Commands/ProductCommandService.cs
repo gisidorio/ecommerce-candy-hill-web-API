@@ -14,12 +14,12 @@ namespace EcommerceCandyHill.Application.Products.Commands
 {
     public class ProductCommandService : IProductCommandService
     {
-        private readonly IProductDomainService _productService;
+        private readonly IProductDomainService _productDomainService;
         private readonly IProductValidator _productValidator;
 
         public ProductCommandService(IProductDomainService productService, IProductValidator productValidator)
         {
-            _productService = productService;
+            _productDomainService = productService;
             _productValidator = productValidator;
         }
 
@@ -40,7 +40,12 @@ namespace EcommerceCandyHill.Application.Products.Commands
                 IsActive = command.IsActive
             };
 
-            _productService.Save(product);
+            var productId = _productDomainService.Save(product);
+
+            if (command.TagIds != null && command.TagIds.Any())
+            {
+                _productDomainService.AddTagsToProduct(productId, command.TagIds);
+            }
 
             return validation;
         }
@@ -52,7 +57,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
             if (!validation.IsValid)
                 return validation;
 
-            var product = _productService.GetById(command.Id);
+            var product = _productDomainService.GetById(command.Id);
 
             if (product == null)
             {
@@ -70,7 +75,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
                 IsActive = command.IsActive
             };
 
-            _productService.Update(productUpdate);
+            _productDomainService.Update(productUpdate);
 
             return validation;
         }
@@ -79,7 +84,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
         {            
             var validation = _productValidator.Validate(command);
 
-            var product = _productService.GetById(command.Id);
+            var product = _productDomainService.GetById(command.Id);
 
             if (product == null)
             {
@@ -94,7 +99,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
             if (!validation.IsValid)
                 return validation;            
 
-            _productService.Deactivate(command.Id);
+            _productDomainService.Deactivate(command.Id);
             return validation;
         }
     }
