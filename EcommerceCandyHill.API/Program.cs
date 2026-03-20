@@ -6,6 +6,8 @@ using EcommerceCandyHill.Application.Products.Commands;
 using EcommerceCandyHill.Application.Products.Queries;
 using EcommerceCandyHill.Application.Tags.Commands;
 using EcommerceCandyHill.Application.Tags.Queries;
+using EcommerceCandyHill.Application.Users.Commands;
+using EcommerceCandyHill.Application.Users.Queries;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 using EcommerceCandyHill.Domain.Interfaces.Repositories;
@@ -59,6 +61,16 @@ builder.Services.AddTransient<IProductFAQCommandService, ProductFAQCommandServic
 builder.Services.AddTransient<IProductFAQDomainService, ProductFAQDomainService>();
 builder.Services.AddTransient<IProductFAQRepository, ProductFAQRepository>();
 builder.Services.AddTransient<IProductFAQValidator, ProductFAQValidator>();
+
+#endregion
+
+#region Dependency Injection for Users
+
+builder.Services.AddTransient<IUserQueryService, UserQueryService>();
+builder.Services.AddTransient<IUserCommandService, UserCommandService>();
+builder.Services.AddTransient<IUserDomainService, UserDomainService>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserValidator, UserValidator>();
 
 #endregion
 

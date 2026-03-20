@@ -11,5 +11,8 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
     {
         int Save(User user);
         List<User> GetAll();
+        void Update(User user);
+        void Deactivate(int id);
+        User? GetById(int id);
     }
 }
