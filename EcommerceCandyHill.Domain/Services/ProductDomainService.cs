@@ -42,5 +42,10 @@ namespace EcommerceCandyHill.Domain.Services
         {
             return _productRepository.GetById(id);
         }
+
+        public void AddTagsToProduct(int productId, IEnumerable<int> tagIds)
+        {
+            _productRepository.AddTagsToProduct(productId, tagIds);
+        }
     }
 }

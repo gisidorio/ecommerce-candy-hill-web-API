@@ -21,9 +21,53 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
+        public void AddTagsToProduct(int productId, IEnumerable<int> tagIds)
+        {
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_ProductTag_InsertBatch";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var productIdParam = command.CreateParameter();
+                    productIdParam.ParameterName = "@ProductId";
+                    productIdParam.DbType = DbType.Int32;
+                    productIdParam.Value = productId;
+                    command.Parameters.Add(productIdParam);
+
+                    var table = new DataTable();
+                    table.Columns.Add("TagId", typeof(int));
+
+                    foreach (var tagId in tagIds)
+                    {
+                        table.Rows.Add(tagId);
+                    }
+
+                    var tvpParam = command.CreateParameter();
+                    tvpParam.ParameterName = "@TagIds";
+                    tvpParam.Value = table;
+
+                    if (tvpParam is SqlParameter sqlParam)
+                    {
+                        sqlParam.SqlDbType = SqlDbType.Structured;
+                        sqlParam.TypeName = "dbo.TagIdList";
+                    }
+
+                    command.Parameters.Add(tvpParam);
+
+                    connection.Open();
+
+                    command.ExecuteNonQuery();
+
+                    connection.Close();
+                }
+            }
+        }
+
         public void Deactivate(int id)
         {
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
@@ -41,9 +85,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public List<Product> GetAll()
         {
-            List<Product> products = new List<Product>();
+            var products = new List<Product>();
 
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
@@ -81,7 +125,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         {
             Product? product = null;
 
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
@@ -116,11 +160,11 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public int Save(Product product)
         {
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "USP_INSERT_PRODUCT";
+                    command.CommandText = "usp_Product_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
                     var nameParam = command.CreateParameter();
@@ -136,9 +180,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.Parameters.Add(priceParam);
 
                     var QuantityParameter = command.CreateParameter();
-                    priceParam.ParameterName = "@Quantity";
-                    priceParam.DbType = DbType.Int32;
-                    priceParam.Value = product.Quantity;
+                    QuantityParameter.ParameterName = "@Quantity";
+                    QuantityParameter.DbType = DbType.Int32;
+                    QuantityParameter.Value = product.Quantity;
                     command.Parameters.Add(QuantityParameter);
 
                     var descParam = command.CreateParameter();
@@ -148,9 +192,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.Parameters.Add(descParam);
 
                     var isActiveParam = command.CreateParameter();
-                    descParam.ParameterName = "@IsActive";
-                    descParam.DbType = DbType.Boolean;
-                    descParam.Value = product.IsActive;
+                    isActiveParam.ParameterName = "@IsActive";
+                    isActiveParam.DbType = DbType.Boolean;
+                    isActiveParam.Value = product.IsActive;
                     command.Parameters.Add(isActiveParam);
 
                     var outputIdParam = command.CreateParameter();
@@ -174,7 +218,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public void Update(Product product)
         {
-            using (var connection = _connectionFactory.CriarConexaoBaseDeDados())
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
