@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace EcommerceCandyHill.Domain.Entities
 {
-    public class User
+    public class ProductFAQ
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
-        public required string Email { get; set; }
-        public required string PasswordHash { get; set; }
+        public int ProductId { get; set; }
+        public required string Question { get; set; }
+        public required string Answer { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedAt { get; set; }
     }
