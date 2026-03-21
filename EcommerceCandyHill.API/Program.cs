@@ -4,6 +4,8 @@ using EcommerceCandyHill.Application.ProductImages.Commands;
 using EcommerceCandyHill.Application.ProductImages.Queries;
 using EcommerceCandyHill.Application.Products.Commands;
 using EcommerceCandyHill.Application.Products.Queries;
+using EcommerceCandyHill.Application.Roles.Commands;
+using EcommerceCandyHill.Application.Roles.Queries;
 using EcommerceCandyHill.Application.Tags.Commands;
 using EcommerceCandyHill.Application.Tags.Queries;
 using EcommerceCandyHill.Application.Users.Commands;
@@ -71,6 +73,16 @@ builder.Services.AddTransient<IUserCommandService, UserCommandService>();
 builder.Services.AddTransient<IUserDomainService, UserDomainService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 builder.Services.AddTransient<IUserValidator, UserValidator>();
+
+#endregion
+
+#region Dependency Injection for Roles
+
+builder.Services.AddTransient<IRoleQueryService, RoleQueryService>();
+builder.Services.AddTransient<IRoleCommandService, RoleCommandService>();
+builder.Services.AddTransient<IRoleDomainService, RoleDomainService>();
+builder.Services.AddTransient<IRoleRepository, RoleRepository>();
+builder.Services.AddTransient<IRoleValidator, RoleValidator>();
 
 #endregion
 
