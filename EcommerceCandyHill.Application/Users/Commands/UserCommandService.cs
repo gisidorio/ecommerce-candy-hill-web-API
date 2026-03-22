@@ -40,7 +40,8 @@ namespace EcommerceCandyHill.Application.Users.Commands
                 IsActive = command.IsActive
             };
 
-            _userDomainService.Save(user);
+            var userId = _userDomainService.Save(user);
+
 
             return validation;
         }

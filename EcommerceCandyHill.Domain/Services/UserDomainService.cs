@@ -18,6 +18,11 @@ namespace EcommerceCandyHill.Domain.Services
             _userRepository = userRepository;
         }
 
+        public void AddRolesToUser(int userId, IEnumerable<int> roleIds)
+        {
+            _userRepository.AddRolesToUser(userId, roleIds);
+        }
+
         public void Deactivate(int id)
         {
             _userRepository.Deactivate(id);
@@ -41,6 +46,11 @@ namespace EcommerceCandyHill.Domain.Services
         public void Update(User user)
         {
             _userRepository.Update(user);
+        }
+
+        public void UpdateRolesToUser(int userId, IEnumerable<int> roleIds)
+        {
+            _userRepository.UpdateRolesToUser(userId, roleIds);
         }
     }
 }
