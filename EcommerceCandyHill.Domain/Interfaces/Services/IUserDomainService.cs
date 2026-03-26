@@ -14,5 +14,7 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
         void Update(User user);
         void Deactivate(int id);
         User? GetById(int id);
+        void AddRolesToUser(int userId, IEnumerable<int> roleIds);
+        void UpdateRolesToUser(int userId, IEnumerable<int> roleIds);
     }
 }

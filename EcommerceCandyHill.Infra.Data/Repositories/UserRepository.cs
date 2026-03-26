@@ -19,6 +19,50 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
+        public void AddRolesToUser(int userId, IEnumerable<int> roleIds)
+        {
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_UserRole_InsertBatch";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var userIdParam = command.CreateParameter();
+                    userIdParam.ParameterName = "@UserId";
+                    userIdParam.DbType = DbType.Int32;
+                    userIdParam.Value = userId;
+                    command.Parameters.Add(userIdParam);
+
+                    var table = new DataTable();
+                    table.Columns.Add("RoleId", typeof(int));
+
+                    foreach (var roleId in roleIds)
+                    {
+                        table.Rows.Add(roleId);
+                    }
+
+                    var tvpParam = command.CreateParameter();
+                    tvpParam.ParameterName = "@RoleIds";
+                    tvpParam.Value = table;
+
+                    if (tvpParam is SqlParameter sqlParam)
+                    {
+                        sqlParam.SqlDbType = SqlDbType.Structured;
+                        sqlParam.TypeName = "dbo.RoleIdList";
+                    }
+
+                    command.Parameters.Add(tvpParam);
+
+                    connection.Open();
+
+                    command.ExecuteNonQuery();
+
+                    connection.Close();
+                }
+            }
+        }
+
         public void Deactivate(int id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
@@ -204,6 +248,50 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
                     connection.Open();
                     command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+        }
+
+        public void UpdateRolesToUser(int userId, IEnumerable<int> roleIds)
+        {
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_UserRole_UpdateBatch";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var userIdParam = command.CreateParameter();
+                    userIdParam.ParameterName = "@UserId";
+                    userIdParam.DbType = DbType.Int32;
+                    userIdParam.Value = userId;
+                    command.Parameters.Add(userIdParam);
+
+                    var table = new DataTable();
+                    table.Columns.Add("RoleId", typeof(int));
+
+                    foreach (var roleId in roleIds)
+                    {
+                        table.Rows.Add(roleId);
+                    }
+
+                    var tvpParam = command.CreateParameter();
+                    tvpParam.ParameterName = "@RoleIds";
+                    tvpParam.Value = table;
+
+                    if (tvpParam is SqlParameter sqlParam)
+                    {
+                        sqlParam.SqlDbType = SqlDbType.Structured;
+                        sqlParam.TypeName = "dbo.RoleIdList";
+                    }
+
+                    command.Parameters.Add(tvpParam);
+
+                    connection.Open();
+
+                    command.ExecuteNonQuery();
+
                     connection.Close();
                 }
             }

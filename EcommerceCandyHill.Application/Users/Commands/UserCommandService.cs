@@ -40,7 +40,12 @@ namespace EcommerceCandyHill.Application.Users.Commands
                 IsActive = command.IsActive
             };
 
-            _userDomainService.Save(user);
+            var userId = _userDomainService.Save(user);
+
+            if (command.RoleIds != null && command.RoleIds.Any())
+            {
+                _userDomainService.AddRolesToUser(userId, command.RoleIds);
+            }
 
             return validation;
         }
@@ -94,7 +99,11 @@ namespace EcommerceCandyHill.Application.Users.Commands
                 IsActive = command.IsActive
             };
 
-            _userDomainService.Update(userUpdate);
+
+            if (command.RoleIds != null && command.RoleIds.Any())
+            {
+                _userDomainService.UpdateRolesToUser(command.Id, command.RoleIds);
+            }
 
             return validation;
         }
