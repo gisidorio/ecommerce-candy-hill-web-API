@@ -8,7 +8,7 @@ namespace EcommerceCandyHill.Domain.Entities
 {
     public class Tag
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Name { get; set; }
         public bool IsActive { get; set; }
         public DateTime? CreatedAt { get; set; }

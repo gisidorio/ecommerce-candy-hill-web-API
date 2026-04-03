@@ -19,51 +19,46 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void AddRolesToUser(int userId, IEnumerable<int> roleIds)
+        public void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_UserRole_InsertBatch";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var userIdParam = command.CreateParameter();
+                userIdParam.ParameterName = "@UserId";
+                userIdParam.DbType = DbType.Guid;
+                userIdParam.Value = userId;
+                command.Parameters.Add(userIdParam);
+
+                var table = new DataTable();
+                table.Columns.Add("RoleId", typeof(Guid));
+
+                foreach (var roleId in roleIds)
                 {
-                    command.CommandText = "usp_UserRole_InsertBatch";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    var userIdParam = command.CreateParameter();
-                    userIdParam.ParameterName = "@UserId";
-                    userIdParam.DbType = DbType.Int32;
-                    userIdParam.Value = userId;
-                    command.Parameters.Add(userIdParam);
-
-                    var table = new DataTable();
-                    table.Columns.Add("RoleId", typeof(int));
-
-                    foreach (var roleId in roleIds)
-                    {
-                        table.Rows.Add(roleId);
-                    }
-
-                    var tvpParam = command.CreateParameter();
-                    tvpParam.ParameterName = "@RoleIds";
-                    tvpParam.Value = table;
-
-                    if (tvpParam is SqlParameter sqlParam)
-                    {
-                        sqlParam.SqlDbType = SqlDbType.Structured;
-                        sqlParam.TypeName = "dbo.RoleIdList";
-                    }
-
-                    command.Parameters.Add(tvpParam);
-
-                    connection.Open();
-
-                    command.ExecuteNonQuery();
-
-                    connection.Close();
+                    table.Rows.Add(roleId);
                 }
+
+                var tvpParam = command.CreateParameter();
+                tvpParam.ParameterName = "@RoleIds";
+                tvpParam.Value = table;
+
+                if (tvpParam is SqlParameter sqlParam)
+                {
+                    sqlParam.SqlDbType = SqlDbType.Structured;
+                    sqlParam.TypeName = "dbo.RoleIdList";
+                }
+
+                command.Parameters.Add(tvpParam);
+
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -72,11 +67,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_User_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }
@@ -100,12 +98,12 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             var user = new User
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"].ToString() ?? string.Empty,
-                                Email = reader["Email"].ToString() ?? string.Empty,
-                                PasswordHash = reader["PasswordHash"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
 
                             users.Add(user);
@@ -119,7 +117,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return users;
         }
 
-        public User? GetById(int id)
+        public User? GetById(Guid id)
         {
             User? user = null;
 
@@ -130,7 +128,11 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_User_GetById";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
 
                     connection.Open();
 
@@ -140,12 +142,12 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             user = new User
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"].ToString() ?? string.Empty,
-                                Email = reader["Email"].ToString() ?? string.Empty,
-                                PasswordHash = reader["PasswordHash"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
                         }
                     }
@@ -155,7 +157,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return user;
         }
 
-        public int Save(User user)
+        public Guid Save(User user)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -164,43 +166,33 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_User_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var NameParam = command.CreateParameter();
-                    NameParam.ParameterName = "@Name";
-                    NameParam.DbType = DbType.String;
-                    NameParam.Value = user.Name;
-                    command.Parameters.Add(NameParam);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = user.Id
+                    });
 
-                    var EmailParam = command.CreateParameter();
-                    EmailParam.ParameterName = "@Email";
-                    EmailParam.DbType = DbType.String;
-                    EmailParam.Value = user.Email;
-                    command.Parameters.Add(EmailParam);                    
+                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                    {
+                        Value = user.Name
+                    });
 
-                    var PasswordHash = command.CreateParameter();
-                    PasswordHash.ParameterName = "@PasswordHash";
-                    PasswordHash.DbType = DbType.String;
-                    EmailParam.Value = user.PasswordHash;
-                    command.Parameters.Add(PasswordHash);
+                    command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar)
+                    {
+                        Value = user.Email
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = user.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar)
+                    {
+                        Value = user.PasswordHash
+                    });
 
-                    var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@Id";
-                    outputIdParam.DbType = DbType.Int32;
-                    outputIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(outputIdParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = user.IsActive
+                    });
 
                     connection.Open();
-
                     command.ExecuteNonQuery();
-
-                    user.Id = Convert.ToInt32(outputIdParam.Value);
-
-                    connection.Close();
                 }
             }
 
@@ -210,90 +202,77 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         public void Update(User user)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_User_Update";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
                 {
-                    command.CommandText = "usp_User_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Value = user.Id
+                });
 
-                    var IdParameter = command.CreateParameter();
-                    IdParameter.ParameterName = "@Id";
-                    IdParameter.DbType = DbType.Int32;
-                    IdParameter.Value = user.Id;
-                    command.Parameters.Add(IdParameter);
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                {
+                    Value = user.Name ?? (object)DBNull.Value
+                });
 
-                    var NameParam = command.CreateParameter();
-                    NameParam.ParameterName = "@Name";
-                    NameParam.DbType = DbType.String;
-                    NameParam.Value = user.Name;
-                    command.Parameters.Add(NameParam);
+                command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar)
+                {
+                    Value = user.Email ?? (object)DBNull.Value
+                });
 
-                    var EmailParam = command.CreateParameter();
-                    EmailParam.ParameterName = "@Email";
-                    EmailParam.DbType = DbType.String;
-                    EmailParam.Value = user.Email;
-                    command.Parameters.Add(EmailParam);
+                command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar)
+                {
+                    Value = user.PasswordHash ?? (object)DBNull.Value
+                });
 
-                    var PasswordHash = command.CreateParameter();
-                    PasswordHash.ParameterName = "@PasswordHash";
-                    PasswordHash.DbType = DbType.String;
-                    EmailParam.Value = user.PasswordHash;
-                    command.Parameters.Add(PasswordHash);
+                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                {
+                    Value = user.IsActive
+                });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = user.IsActive;
-                    command.Parameters.Add(IsActiveParam);
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
-        public void UpdateRolesToUser(int userId, IEnumerable<int> roleIds)
+        public void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_UserRole_UpdateBatch";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var userIdParam = command.CreateParameter();
+                userIdParam.ParameterName = "@UserId";
+                userIdParam.DbType = DbType.Guid;
+                userIdParam.Value = userId;
+                command.Parameters.Add(userIdParam);
+
+                var table = new DataTable();
+                table.Columns.Add("RoleId", typeof(Guid));
+
+                foreach (var roleId in roleIds)
                 {
-                    command.CommandText = "usp_UserRole_UpdateBatch";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    var userIdParam = command.CreateParameter();
-                    userIdParam.ParameterName = "@UserId";
-                    userIdParam.DbType = DbType.Int32;
-                    userIdParam.Value = userId;
-                    command.Parameters.Add(userIdParam);
-
-                    var table = new DataTable();
-                    table.Columns.Add("RoleId", typeof(int));
-
-                    foreach (var roleId in roleIds)
-                    {
-                        table.Rows.Add(roleId);
-                    }
-
-                    var tvpParam = command.CreateParameter();
-                    tvpParam.ParameterName = "@RoleIds";
-                    tvpParam.Value = table;
-
-                    if (tvpParam is SqlParameter sqlParam)
-                    {
-                        sqlParam.SqlDbType = SqlDbType.Structured;
-                        sqlParam.TypeName = "dbo.RoleIdList";
-                    }
-
-                    command.Parameters.Add(tvpParam);
-
-                    connection.Open();
-
-                    command.ExecuteNonQuery();
-
-                    connection.Close();
+                    table.Rows.Add(roleId);
                 }
+
+                var tvpParam = command.CreateParameter();
+                tvpParam.ParameterName = "@RoleIds";
+                tvpParam.Value = table;
+
+                if (tvpParam is SqlParameter sqlParam)
+                {
+                    sqlParam.SqlDbType = SqlDbType.Structured;
+                    sqlParam.TypeName = "dbo.RoleIdList";
+                }
+
+                command.Parameters.Add(tvpParam);
+
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
     }

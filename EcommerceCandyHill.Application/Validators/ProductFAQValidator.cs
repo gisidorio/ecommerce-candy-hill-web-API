@@ -67,9 +67,6 @@ namespace EcommerceCandyHill.Application.Validators
                 return validationResult;
             }
 
-            if (command.Id <= 0)
-                validationResult.AddError("O id de FAQ é obrigatório.");
-
             return validationResult;
         }
     }

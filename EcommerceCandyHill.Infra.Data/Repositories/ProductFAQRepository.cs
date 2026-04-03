@@ -19,7 +19,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -28,11 +28,10 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductFAQ_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }
@@ -56,11 +55,11 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             var productFAQ = new ProductFAQ
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Question = reader["Question"].ToString() ?? string.Empty,
-                                Answer = reader["Answer"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Question = reader.GetString(reader.GetOrdinal("Question")),
+                                Answer = reader.GetString(reader.GetOrdinal("Answer")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
 
                             productFAQs.Add(productFAQ);
@@ -74,7 +73,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return productFAQs;
         }
 
-        public ProductFAQ? GetById(int id)
+        public ProductFAQ? GetById(Guid id)
         {
             ProductFAQ? productFAQ = null;
 
@@ -85,7 +84,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductFAQ_GetById";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
 
                     connection.Open();
 
@@ -95,11 +94,11 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             productFAQ = new ProductFAQ
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Question = reader["Question"].ToString() ?? string.Empty,
-                                Answer = reader["Answer"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Question = reader.GetString(reader.GetOrdinal("Question")),
+                                Answer = reader.GetString(reader.GetOrdinal("Answer")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
                         }
                     }
@@ -109,7 +108,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return productFAQ;
         }
 
-        public int Save(ProductFAQ entity)
+        public Guid Save(ProductFAQ entity)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -118,43 +117,33 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductFAQ_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var ProductIdParameter = command.CreateParameter();
-                    ProductIdParameter.ParameterName = "@ProductId";
-                    ProductIdParameter.DbType = DbType.Int32;
-                    ProductIdParameter.Value = entity.ProductId;
-                    command.Parameters.Add(ProductIdParameter);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
 
-                    var QuestionParameter = command.CreateParameter();
-                    QuestionParameter.ParameterName = "@Question";
-                    QuestionParameter.DbType = DbType.String;
-                    QuestionParameter.Value = entity.Question;
-                    command.Parameters.Add(QuestionParameter);
+                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.ProductId
+                    });
 
-                    var AnswerParameter = command.CreateParameter();
-                    AnswerParameter.ParameterName = "@Answer";
-                    AnswerParameter.DbType = DbType.String;
-                    AnswerParameter.Value = entity.Answer;
-                    command.Parameters.Add(AnswerParameter);
+                    command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
+                    {
+                        Value = entity.Question
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
+                    {
+                        Value = entity.Answer
+                    });
 
-                    var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@Id";
-                    outputIdParam.DbType = DbType.Int32;
-                    outputIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(outputIdParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = entity.IsActive
+                    });
 
                     connection.Open();
-
                     command.ExecuteNonQuery();
-
-                    entity.Id = Convert.ToInt32(outputIdParam.Value);
-
-                    connection.Close();
                 }
             }
 
@@ -170,39 +159,33 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductFAQ_Update";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var IdParameter = command.CreateParameter();
-                    IdParameter.ParameterName = "@Id";
-                    IdParameter.DbType = DbType.Int32;
-                    IdParameter.Value = entity.Id;
-                    command.Parameters.Add(IdParameter);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
 
-                    var ProductIdParameter = command.CreateParameter();
-                    ProductIdParameter.ParameterName = "@ProductId";
-                    ProductIdParameter.DbType = DbType.Int32;
-                    ProductIdParameter.Value = entity.ProductId;
-                    command.Parameters.Add(ProductIdParameter);
+                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.ProductId
+                    });
 
-                    var QuestionParameter = command.CreateParameter();
-                    QuestionParameter.ParameterName = "@Question";
-                    QuestionParameter.DbType = DbType.String;
-                    QuestionParameter.Value = entity.Question;
-                    command.Parameters.Add(QuestionParameter);
+                    command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
+                    {
+                        Value = entity.Question
+                    });
 
-                    var AnswerParameter = command.CreateParameter();
-                    AnswerParameter.ParameterName = "@Answer";
-                    AnswerParameter.DbType = DbType.String;
-                    AnswerParameter.Value = entity.Answer;
-                    command.Parameters.Add(AnswerParameter);
+                    command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
+                    {
+                        Value = entity.Answer
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = entity.IsActive
+                    });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }

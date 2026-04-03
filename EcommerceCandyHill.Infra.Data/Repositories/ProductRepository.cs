@@ -21,64 +21,62 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void AddTagsToProduct(int productId, IEnumerable<int> tagIds)
+        public void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_ProductTag_InsertBatch";
+                command.CommandType = CommandType.StoredProcedure;
+
+                var ProductIdParam = command.CreateParameter();
+                ProductIdParam.ParameterName = "@productId";
+                ProductIdParam.DbType = DbType.Guid;
+                ProductIdParam.Value = productId;
+                command.Parameters.Add(ProductIdParam);
+
+                var table = new DataTable();
+                table.Columns.Add("TagId", typeof(Guid));
+
+                foreach (var roleId in tagIds)
                 {
-                    command.CommandText = "usp_ProductTag_InsertBatch";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    var productIdParam = command.CreateParameter();
-                    productIdParam.ParameterName = "@ProductId";
-                    productIdParam.DbType = DbType.Int32;
-                    productIdParam.Value = productId;
-                    command.Parameters.Add(productIdParam);
-
-                    var table = new DataTable();
-                    table.Columns.Add("TagId", typeof(int));
-
-                    foreach (var tagId in tagIds)
-                    {
-                        table.Rows.Add(tagId);
-                    }
-
-                    var tvpParam = command.CreateParameter();
-                    tvpParam.ParameterName = "@TagIds";
-                    tvpParam.Value = table;
-
-                    if (tvpParam is SqlParameter sqlParam)
-                    {
-                        sqlParam.SqlDbType = SqlDbType.Structured;
-                        sqlParam.TypeName = "dbo.TagIdList";
-                    }
-
-                    command.Parameters.Add(tvpParam);
-
-                    connection.Open();
-
-                    command.ExecuteNonQuery();
-
-                    connection.Close();
+                    table.Rows.Add(roleId);
                 }
+
+                var tvpParam = command.CreateParameter();
+                tvpParam.ParameterName = "@tagIds";
+                tvpParam.Value = table;
+
+                if (tvpParam is SqlParameter sqlParam)
+                {
+                    sqlParam.SqlDbType = SqlDbType.Structured;
+                    sqlParam.TypeName = "dbo.TagIdList";
+                }
+
+                command.Parameters.Add(tvpParam);
+
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
                 using (var command = connection.CreateCommand())
                 {
-                    command.CommandText = "usp_Product_Delete";
+                    command.CommandText = "usp_Product_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }
@@ -102,12 +100,12 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             Product product = new Product
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Nome"] as string ?? string.Empty,
-                                Price = Convert.ToDecimal(reader["Price"]),
-                                Quantity = Convert.ToInt32(reader["Quantity"]),
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
 
                             products.Add(product);
@@ -121,7 +119,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return products;
         }
 
-        public Product? GetById(int id)
+        public Product? GetById(Guid id)
         {
             Product? product = null;
 
@@ -142,13 +140,12 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             product = new Product
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"] as string ?? string.Empty,
-                                Price = Convert.ToDecimal(reader["Price"]),
-                                Description = reader["Description"] as string ?? string.Empty,
-                                Quantity = Convert.ToInt32(reader["Quantity"]),
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
                         }
                     }
@@ -158,7 +155,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return product;
         }
 
-        public int Save(Product product)
+        public Guid Save(Product product)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -167,49 +164,33 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_Product_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var nameParam = command.CreateParameter();
-                    nameParam.ParameterName = "@Name";
-                    nameParam.DbType = DbType.String;
-                    nameParam.Value = product.Name;
-                    command.Parameters.Add(nameParam);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = product.Id
+                    });
 
-                    var priceParam = command.CreateParameter();
-                    priceParam.ParameterName = "@Price";
-                    priceParam.DbType = DbType.Decimal;
-                    priceParam.Value = product.Price;
-                    command.Parameters.Add(priceParam);
+                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                    {
+                        Value = product.Name
+                    });
 
-                    var QuantityParameter = command.CreateParameter();
-                    QuantityParameter.ParameterName = "@Quantity";
-                    QuantityParameter.DbType = DbType.Int32;
-                    QuantityParameter.Value = product.Quantity;
-                    command.Parameters.Add(QuantityParameter);
+                    command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
+                    {
+                        Value = product.Price
+                    });
 
-                    var descParam = command.CreateParameter();
-                    descParam.ParameterName = "@Description";
-                    descParam.DbType = DbType.String;
-                    descParam.Value = product.Description ?? string.Empty;
-                    command.Parameters.Add(descParam);
+                    command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
+                    {
+                        Value = product.Quantity
+                    });
 
-                    var isActiveParam = command.CreateParameter();
-                    isActiveParam.ParameterName = "@IsActive";
-                    isActiveParam.DbType = DbType.Boolean;
-                    isActiveParam.Value = product.IsActive;
-                    command.Parameters.Add(isActiveParam);
-
-                    var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@Id";
-                    outputIdParam.DbType = DbType.Int32;
-                    outputIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(outputIdParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = product.IsActive
+                    });
 
                     connection.Open();
-
                     command.ExecuteNonQuery();
-
-                    product.Id = Convert.ToInt32(outputIdParam.Value);
-
-                    connection.Close();
                 }
             }
 
@@ -219,53 +200,38 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         public void Update(Product product)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_Product_Update";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
                 {
-                    command.CommandText = "usp_Product_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Value = product.Id
+                });
 
-                    var idParam = command.CreateParameter();
-                    idParam.ParameterName = "@Id";
-                    idParam.DbType = DbType.Int32;
-                    idParam.Value = product.Id;
-                    command.Parameters.Add(idParam);
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                {
+                    Value = product.Name
+                });
 
-                    var nameParam = command.CreateParameter();
-                    nameParam.ParameterName = "@Name";
-                    nameParam.DbType = DbType.String;
-                    nameParam.Size = 100; 
-                    nameParam.Value = product.Name;
-                    command.Parameters.Add(nameParam);
+                command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
+                {
+                    Value = product.Price
+                });
 
-                    var priceParam = command.CreateParameter();
-                    priceParam.ParameterName = "@Price";
-                    priceParam.DbType = DbType.Decimal;
-                    priceParam.Value = product.Price;
-                    command.Parameters.Add(priceParam);
+                command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
+                {
+                    Value = product.Quantity
+                });
 
-                    var QuantityParameter = command.CreateParameter();
-                    QuantityParameter.ParameterName = "@Quantity";
-                    QuantityParameter.DbType = DbType.Int32;
-                    QuantityParameter.Value = product.Quantity;
-                    command.Parameters.Add(QuantityParameter);
+                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                {
+                    Value = product.IsActive
+                });
 
-                    var descParam = command.CreateParameter();
-                    descParam.ParameterName = "@Description";
-                    descParam.DbType = DbType.String;
-                    descParam.Value = product.Description ?? string.Empty;
-                    command.Parameters.Add(descParam);
-
-                    var isActiveParam = command.CreateParameter();
-                    isActiveParam.ParameterName = "@IsActive";
-                    isActiveParam.DbType = DbType.Boolean;
-                    isActiveParam.Value = product.IsActive;
-                    command.Parameters.Add(isActiveParam);
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
     }

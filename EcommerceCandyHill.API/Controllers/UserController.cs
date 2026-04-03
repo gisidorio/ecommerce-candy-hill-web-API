@@ -44,7 +44,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UpdateUserCommand command)
+        public IActionResult Update(Guid id, [FromBody] UpdateUserCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do usuário é diferente do id informado na rota.");
@@ -58,7 +58,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             var command = new DeleteUserCommand { Id = id };
 

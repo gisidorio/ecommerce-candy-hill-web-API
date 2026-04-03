@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands.DTO
 {
     public class DeleteProductFAQCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

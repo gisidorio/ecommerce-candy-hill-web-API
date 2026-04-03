@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.Users.Commands.DTO
 {
     public class DeleteUserCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

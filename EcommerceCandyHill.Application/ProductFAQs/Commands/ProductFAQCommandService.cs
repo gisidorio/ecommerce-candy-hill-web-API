@@ -34,6 +34,7 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
 
             var productFAQ = new ProductFAQ
             {
+                Id = Guid.NewGuid(),
                 ProductId = command.ProductId,
                 Question = command.Question,
                 Answer = command.Answer,

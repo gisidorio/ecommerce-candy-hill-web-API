@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.Tags.Commands.DTO
 {
     public class DeleteTagCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

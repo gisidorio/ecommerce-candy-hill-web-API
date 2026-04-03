@@ -8,11 +8,11 @@ namespace EcommerceCandyHill.Application.Users.Commands.DTO
 {
     public class UpdateUserCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string PasswordHash { get; set; }
         public bool IsActive { get; set; }
-        public required IEnumerable<int> RoleIds { get; set; }
+        public required IEnumerable<Guid> RoleIds { get; set; }
     }
 }

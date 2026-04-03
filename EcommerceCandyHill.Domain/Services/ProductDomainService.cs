@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _productRepository = productRepository;
         }
 
-        public int Save(Product product)
+        public Guid Save(Product product)
         {
             return _productRepository.Save(product);
         }
@@ -33,17 +33,17 @@ namespace EcommerceCandyHill.Domain.Services
             _productRepository.Update(product);
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             _productRepository.Deactivate(id);
         }
 
-        public Product? GetById(int id)
+        public Product? GetById(Guid id)
         {
             return _productRepository.GetById(id);
         }
 
-        public void AddTagsToProduct(int productId, IEnumerable<int> tagIds)
+        public void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds)
         {
             _productRepository.AddTagsToProduct(productId, tagIds);
         }

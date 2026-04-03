@@ -8,8 +8,8 @@ namespace EcommerceCandyHill.Domain.Entities
 {
     public class ProductFAQ
     {
-        public int Id { get; set; }
-        public int ProductId { get; set; }
+        public Guid Id { get; set; }
+        public Guid ProductId { get; set; }
         public required string Question { get; set; }
         public required string Answer { get; set; }
         public bool IsActive { get; set; }

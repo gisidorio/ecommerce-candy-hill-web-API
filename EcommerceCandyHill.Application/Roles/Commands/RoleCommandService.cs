@@ -34,6 +34,7 @@ namespace EcommerceCandyHill.Application.Roles.Commands
 
             var role = new Role
             {
+                Id = Guid.NewGuid(),
                 Name = command.Name,
                 IsActive = command.IsActive
             };

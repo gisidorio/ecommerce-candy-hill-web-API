@@ -9,12 +9,12 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IUserDomainService
     {
-        int Save(User user);
+        Guid Save(User user);
         List<User> GetAll();
         void Update(User user);
-        void Deactivate(int id);
-        User? GetById(int id);
-        void AddRolesToUser(int userId, IEnumerable<int> roleIds);
-        void UpdateRolesToUser(int userId, IEnumerable<int> roleIds);
+        void Deactivate(Guid id);
+        User? GetById(Guid id);
+        void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
+        void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
     }
 }

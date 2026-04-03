@@ -44,7 +44,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UpdateRoleCommand command)
+        public IActionResult Update(Guid id, [FromBody] UpdateRoleCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do papél é diferente do id informado na rota.");
@@ -58,7 +58,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             var command = new DeleteRoleCommand { Id = id };
 

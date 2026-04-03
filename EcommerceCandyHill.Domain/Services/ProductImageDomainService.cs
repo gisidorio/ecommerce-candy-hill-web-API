@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _imageProductRepository = imageProductRepository;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             _imageProductRepository.Deactivate(id);
         }
@@ -28,12 +28,12 @@ namespace EcommerceCandyHill.Domain.Services
             return _imageProductRepository.GetAll();
         }
 
-        public ProductImage? GetById(int id)
+        public ProductImage? GetById(Guid id)
         {
             return _imageProductRepository.GetById(id);
         }
 
-        public int Save(ProductImage productImage)
+        public Guid Save(ProductImage productImage)
         {
             return _imageProductRepository.Save(productImage);
         }

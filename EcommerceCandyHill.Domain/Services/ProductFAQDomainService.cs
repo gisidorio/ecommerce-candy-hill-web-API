@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _productFAQRepository = productFAQRepository;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             _productFAQRepository.Deactivate(id);
         }
@@ -28,12 +28,12 @@ namespace EcommerceCandyHill.Domain.Services
             return _productFAQRepository.GetAll();
         }
 
-        public ProductFAQ? GetById(int id)
+        public ProductFAQ? GetById(Guid id)
         {
             return _productFAQRepository.GetById(id);
         }
 
-        public int Save(ProductFAQ productFAQ)
+        public Guid Save(ProductFAQ productFAQ)
         {
             return _productFAQRepository.Save(productFAQ);
         }

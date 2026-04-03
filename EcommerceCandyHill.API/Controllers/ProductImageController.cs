@@ -43,7 +43,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] UpdateProductImageCommand command)
+        public IActionResult Update(Guid id, [FromBody] UpdateProductImageCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id da imagem é diferente do id informado na rota.");
@@ -57,7 +57,7 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             var command = new DeleteProductImageCommand { Id = id };
 

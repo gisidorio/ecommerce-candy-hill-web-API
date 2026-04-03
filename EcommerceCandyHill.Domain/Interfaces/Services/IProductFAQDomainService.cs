@@ -9,10 +9,10 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IProductFAQDomainService
     {
-        int Save(ProductFAQ productFAQ);
+        Guid Save(ProductFAQ productFAQ);
         List<ProductFAQ> GetAll();
         void Update(ProductFAQ productFAQ);
-        void Deactivate(int id);
-        ProductFAQ? GetById(int id);
+        void Deactivate(Guid id);
+        ProductFAQ? GetById(Guid id);
     }
 }
