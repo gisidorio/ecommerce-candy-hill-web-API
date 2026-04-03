@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _tagRepository = tagRepository;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             _tagRepository.Deactivate(id);
         }
@@ -28,12 +28,12 @@ namespace EcommerceCandyHill.Domain.Services
             return _tagRepository.GetAll();
         }
 
-        public Tag? GetById(int id)
+        public Tag? GetById(Guid id)
         {
             return _tagRepository.GetById(id);
         }
 
-        public int Save(Tag tag)
+        public Guid Save(Tag tag)
         {
             return _tagRepository.Save(tag);    
         }

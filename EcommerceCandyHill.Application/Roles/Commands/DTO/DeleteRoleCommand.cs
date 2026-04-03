@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.Roles.Commands.DTO
 {
     public class DeleteRoleCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

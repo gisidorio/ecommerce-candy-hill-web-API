@@ -9,11 +9,11 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IProductDomainService
     {
-        int Save(Product product);
+        Guid Save(Product product);
         List<Product> GetAll();
         void Update(Product product);
-        void Deactivate(int id);
-        Product? GetById(int id);
-        void AddTagsToProduct(int productId, IEnumerable<int> tagIds);
+        void Deactivate(Guid id);
+        Product? GetById(Guid id);
+        void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds);
     }
 }

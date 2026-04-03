@@ -19,7 +19,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -28,11 +28,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_Role_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }
@@ -56,10 +59,10 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             var role = new Role
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
 
                             roles.Add(role);
@@ -73,7 +76,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return roles;
         }
 
-        public Role? GetById(int id)
+        public Role? GetById(Guid id)
         {
             Role? role = null;
 
@@ -94,10 +97,10 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             role = new Role
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"].ToString() ?? string.Empty,
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
                             };
                         }
                     }
@@ -107,7 +110,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return role;
         }
 
-        public int Save(Role entity)
+        public Guid Save(Role entity)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -116,31 +119,23 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_Role_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var NameParameter = command.CreateParameter();
-                    NameParameter.ParameterName = "@Name";
-                    NameParameter.DbType = DbType.String;
-                    NameParameter.Value = entity.Name;
-                    command.Parameters.Add(NameParameter);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                    {
+                        Value = entity.Name
+                    });
 
-                    var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@Id";
-                    outputIdParam.DbType = DbType.Int32;
-                    outputIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(outputIdParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = entity.IsActive
+                    });
 
                     connection.Open();
-
                     command.ExecuteNonQuery();
-
-                    entity.Id = Convert.ToInt32(outputIdParam.Value);
-
-                    connection.Close();
                 }
             }
 
@@ -150,34 +145,28 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
         public void Update(Role entity)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
+            using (var command = connection.CreateCommand())
             {
-                using (var command = connection.CreateCommand())
+                command.CommandText = "usp_PaymentMethod_Update";
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
                 {
-                    command.CommandText = "usp_Role_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Value = entity.Id
+                });
 
-                    var IdParameter = command.CreateParameter();
-                    IdParameter.ParameterName = "@Id";
-                    IdParameter.DbType = DbType.Int32;
-                    IdParameter.Value = entity.Id;
-                    command.Parameters.Add(IdParameter);
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+                {
+                    Value = entity.Name ?? (object)DBNull.Value
+                });
 
-                    var NameParameter = command.CreateParameter();
-                    NameParameter.ParameterName = "@Name";
-                    NameParameter.DbType = DbType.String;
-                    NameParameter.Value = entity.Name;
-                    command.Parameters.Add(NameParameter);
+                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                {
+                    Value = entity.IsActive
+                });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
+                connection.Open();
+                command.ExecuteNonQuery();
             }
         }
     }

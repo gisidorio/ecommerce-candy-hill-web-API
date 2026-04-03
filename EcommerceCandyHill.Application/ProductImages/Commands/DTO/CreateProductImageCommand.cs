@@ -9,7 +9,7 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands.DTO
     public class CreateProductImageCommand
     {
         public required string ImageUrl { get; set; }
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public bool IsMain { get; set; }
         public bool IsActive { get; set; }
     }

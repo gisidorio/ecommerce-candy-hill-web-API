@@ -20,7 +20,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -29,11 +29,14 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductImage_Deactivate";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
 
                     connection.Open();
                     command.ExecuteNonQuery();
-                    connection.Close();
                 }
             }
         }
@@ -57,9 +60,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             var productImage = new ProductImage
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                ProductId = Convert.ToInt32(reader["ProductId"]),
-                                ImageUrl = reader["ImageUrl"].ToString() ?? string.Empty,
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
+                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 IsMain = Convert.ToBoolean(reader["IsMain"]),
                                 IsActive = Convert.ToBoolean(reader["IsActive"]),
                                 CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
@@ -76,7 +79,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return productImages;
         }
 
-        public ProductImage? GetById(int id)
+        public ProductImage? GetById(Guid id)
         {
             ProductImage? productImage = null;
 
@@ -87,7 +90,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductImage_GetById";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
 
                     connection.Open();
 
@@ -97,9 +100,9 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                         {
                             productImage = new ProductImage
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                ProductId = Convert.ToInt32(reader["ProductId"]),
-                                ImageUrl = reader["ImageUrl"].ToString() ?? string.Empty,
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
+                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 IsMain = Convert.ToBoolean(reader["IsMain"]),
                                 IsActive = Convert.ToBoolean(reader["IsActive"]),
                                 CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
@@ -112,7 +115,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             return productImage;
         }
 
-        public int Save(ProductImage entity)
+        public Guid Save(ProductImage entity)
         {
             using (var connection = _connectionFactory.CreateDatabaseConnection())
             {
@@ -121,43 +124,33 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductImage_Insert";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var ProductIdParameter = command.CreateParameter();
-                    ProductIdParameter.ParameterName = "@ProductId";
-                    ProductIdParameter.DbType = DbType.Int32;
-                    ProductIdParameter.Value = entity.ProductId;
-                    command.Parameters.Add(ProductIdParameter);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
 
-                    var ImageUrlParameter = command.CreateParameter();
-                    ImageUrlParameter.ParameterName = "@ImageUrl";
-                    ImageUrlParameter.DbType = DbType.String;
-                    ImageUrlParameter.Value = entity.ImageUrl;
-                    command.Parameters.Add(ImageUrlParameter);
+                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.ProductId
+                    });
 
-                    var IsMainParameter = command.CreateParameter();
-                    IsMainParameter.ParameterName = "@IsMain";
-                    IsMainParameter.DbType = DbType.Boolean;
-                    IsMainParameter.Value = entity.IsMain;
-                    command.Parameters.Add(IsMainParameter);
+                    command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
+                    {
+                        Value = entity.ImageUrl
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
+                    {
+                        Value = entity.IsMain
+                    });
 
-                    var outputIdParam = command.CreateParameter();
-                    outputIdParam.ParameterName = "@Id";
-                    outputIdParam.DbType = DbType.Int32;
-                    outputIdParam.Direction = ParameterDirection.Output;
-                    command.Parameters.Add(outputIdParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = entity.IsActive
+                    });
 
                     connection.Open();
-
                     command.ExecuteNonQuery();
-
-                    entity.Id = Convert.ToInt32(outputIdParam.Value);
-
-                    connection.Close();
                 }
             }
 
@@ -173,37 +166,31 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "usp_ProductImage_Update";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    var IdParameter = command.CreateParameter();
-                    IdParameter.ParameterName = "@Id";
-                    IdParameter.DbType = DbType.Int32;
-                    IdParameter.Value = entity.Id;
-                    command.Parameters.Add(IdParameter);
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
 
-                    var ProductIdParameter = command.CreateParameter();
-                    ProductIdParameter.ParameterName = "@ProductId";
-                    ProductIdParameter.DbType = DbType.Int32;
-                    ProductIdParameter.Value = entity.ProductId;
-                    command.Parameters.Add(ProductIdParameter);
+                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.ProductId
+                    });
 
-                    var ImageUrlParameter = command.CreateParameter();
-                    ImageUrlParameter.ParameterName = "@ImageUrl";
-                    ImageUrlParameter.DbType = DbType.String;
-                    ImageUrlParameter.Value = entity.ImageUrl;
-                    command.Parameters.Add(ImageUrlParameter);
+                    command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
+                    {
+                        Value = entity.ImageUrl
+                    });
 
-                    var IsMainParameter = command.CreateParameter();
-                    IsMainParameter.ParameterName = "@IsMain";
-                    IsMainParameter.DbType = DbType.Boolean;
-                    IsMainParameter.Value = entity.IsMain;
-                    command.Parameters.Add(IsMainParameter);
+                    command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
+                    {
+                        Value = entity.IsMain
+                    });
 
-                    var IsActiveParam = command.CreateParameter();
-                    IsActiveParam.ParameterName = "@IsActive";
-                    IsActiveParam.DbType = DbType.Boolean;
-                    IsActiveParam.Value = entity.IsActive;
-                    command.Parameters.Add(IsActiveParam);
+                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+                    {
+                        Value = entity.IsActive
+                    });
 
-                    connection.Open();
                     command.ExecuteNonQuery();
                     connection.Close();
                 }

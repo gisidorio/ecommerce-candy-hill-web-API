@@ -8,7 +8,7 @@ namespace EcommerceCandyHill.Application.Roles.Commands.DTO
 {
     public class UpdateRoleCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Name { get; set; }
         public bool IsActive { get; set; }
     }

@@ -18,7 +18,7 @@ namespace EcommerceCandyHill.Domain.Services
             _roleRepository = roleRepository;
         }
 
-        public void Deactivate(int id)
+        public void Deactivate(Guid id)
         {
             _roleRepository.Deactivate(id);
         }
@@ -28,12 +28,12 @@ namespace EcommerceCandyHill.Domain.Services
             return _roleRepository.GetAll();
         }
 
-        public Role? GetById(int id)
+        public Role? GetById(Guid id)
         {
             return _roleRepository.GetById(id);
         }
 
-        public int Save(Role role)
+        public Guid Save(Role role)
         {
             return _roleRepository.Save(role);
         }

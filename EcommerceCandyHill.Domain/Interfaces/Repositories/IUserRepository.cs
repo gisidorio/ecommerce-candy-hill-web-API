@@ -9,7 +9,7 @@ namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
     public interface IUserRepository : IBaseRepository<User>
     {
-        void AddRolesToUser(int userId, IEnumerable<int> roleIds);
-        void UpdateRolesToUser(int userId, IEnumerable<int> roleIds);
+        void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
+        void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
     }
 }

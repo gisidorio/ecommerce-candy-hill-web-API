@@ -9,7 +9,7 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands.DTO
 {
     public class UpdateProductFAQCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Question { get; set; }
         public required string Answer { get; set; }
         public bool IsActive { get; set; }

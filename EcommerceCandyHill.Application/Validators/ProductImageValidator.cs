@@ -25,11 +25,6 @@ namespace EcommerceCandyHill.Application.Validators
                 validationResult.AddError("A URL da imagem do produto é obrigatória.");
             }
 
-            if (command.ProductId <= 0)
-            {
-                validationResult.AddError("O ID do produto deve ser um número positivo.");
-            }
-
             return validationResult;
         }
 
@@ -48,11 +43,6 @@ namespace EcommerceCandyHill.Application.Validators
                 validationResult.AddError("A URL da imagem do produto é obrigatória.");
             }
 
-            if (command.ProductId <= 0)
-            {
-                validationResult.AddError("O ID do produto deve ser um número positivo.");
-            }
-
             return validationResult;
         }
 
@@ -65,9 +55,6 @@ namespace EcommerceCandyHill.Application.Validators
                 validationResult.AddError("O objeto de imagem não pode ser nulo.");
                 return validationResult;
             }
-
-            if (command.Id <= 0)
-                validationResult.AddError("Id da imagem é obrigatório.");
 
             return validationResult;
         }

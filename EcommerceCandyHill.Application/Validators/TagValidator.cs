@@ -56,9 +56,6 @@ namespace EcommerceCandyHill.Application.Validators
                 return validationResult;
             }
 
-            if (command.Id <= 0)
-                validationResult.AddError("O id da tag é obrigatório.");
-
             return validationResult;
         }
     }

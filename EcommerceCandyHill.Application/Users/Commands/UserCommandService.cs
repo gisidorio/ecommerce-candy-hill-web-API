@@ -34,6 +34,7 @@ namespace EcommerceCandyHill.Application.Users.Commands
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Name = command.Name,
                 Email = command.Email,
                 PasswordHash = command.PasswordHash,

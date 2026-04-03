@@ -8,7 +8,7 @@ namespace EcommerceCandyHill.Application.Tags.Commands.DTO
 {
     public class UpdateTagCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public required string Name { get; set; }
         public bool IsActive { get; set; }
     }

@@ -8,6 +8,6 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands.DTO
 {
     public class DeleteProductImageCommand
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
     }
 }

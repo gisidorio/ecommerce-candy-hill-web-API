@@ -33,6 +33,7 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
 
             var productImage = new ProductImage
             {
+                Id = Guid.NewGuid(),
                 ImageUrl = command.ImageUrl,
                 ProductId = command.ProductId,
                 IsMain = command.IsMain,

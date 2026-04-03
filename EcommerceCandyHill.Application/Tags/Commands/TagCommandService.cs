@@ -34,6 +34,7 @@ namespace EcommerceCandyHill.Application.Tags.Commands
 
             var tag = new Tag
             {
+                Id = Guid.NewGuid(),
                 Name = command.Name,
                 IsActive = command.IsActive
             };
