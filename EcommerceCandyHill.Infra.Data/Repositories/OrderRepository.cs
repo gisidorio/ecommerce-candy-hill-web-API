@@ -1,0 +1,243 @@
+﻿using EcommerceCandyHill.Domain.Entities;
+using EcommerceCandyHill.Domain.Interfaces.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EcommerceCandyHill.Infra.Data.Repositories
+{
+    public class OrderRepository : IOrderRepository
+    {
+        private readonly IDbConnectionFactory _connectionFactory;
+
+        public OrderRepository(IDbConnectionFactory connectionFactory)
+        {
+            _connectionFactory = connectionFactory;
+        }
+
+        public void Deactivate(Guid id)
+        {
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_PaymentMethod_Deactivate";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Order> GetAll()
+        {
+            var orders = new List<Order>();
+
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_Order_GetAll";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var order = new Order
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
+                                UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
+                                PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
+                                Total = reader.GetDecimal(reader.GetOrdinal("Total")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                            };
+
+                            orders.Add(order);
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+
+            return orders;
+        }
+
+        public Order? GetById(Guid id)
+        {
+            Order? order = null;
+
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_Order_GetById";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(
+                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                        {
+                            Value = id
+                        });
+
+                    connection.Open();
+
+                    using (var reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            order = new Order
+                            {
+                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                                OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
+                                UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
+                                PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
+                                Total = reader.GetDecimal(reader.GetOrdinal("Total")),
+                                Status = reader.GetString(reader.GetOrdinal("Status")),
+                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                            };
+                        }
+                    }
+                }
+            }
+
+            return order;
+        }
+
+        public Guid Save(Order entity)
+        {
+            using var connection = _connectionFactory.CreateDatabaseConnection();
+            using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Order_InsertWithItems";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.Id
+            });
+
+            command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.UserId
+            });
+
+            command.Parameters.Add(new SqlParameter("@PaymentMethodId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.PaymentMethodId
+            });
+
+            command.Parameters.Add(new SqlParameter("@Total", SqlDbType.Decimal)
+            {
+                Precision = 10,
+                Scale = 2,
+                Value = entity.Total
+            });
+
+            command.Parameters.Add(new SqlParameter("@Status", SqlDbType.VarChar, 50)
+            {
+                Value = entity.Status
+            });
+
+            var itemsParam = new SqlParameter("@Items", SqlDbType.Structured)
+            {
+                TypeName = "dbo.OrderItemType",
+                Value = CreateOrderItemsTable(entity.Items)
+            };
+
+            command.Parameters.Add(itemsParam);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            return entity.Id;
+        }
+
+        public void Update(Order entity)
+        {
+            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            {
+                using (var command = connection.CreateCommand())
+                {
+                    command.CommandText = "usp_Order_Update";
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.Id
+                    });
+
+                    command.Parameters.Add(new SqlParameter("@OrderNumber", SqlDbType.BigInt)
+                    {
+                        Value = entity.OrderNumber
+                    });
+
+                    command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.UserId
+                    });
+
+                    command.Parameters.Add(new SqlParameter("@PaymentMethodId", SqlDbType.UniqueIdentifier)
+                    {
+                        Value = entity.PaymentMethodId
+                    });
+
+                    command.Parameters.Add(new SqlParameter("@Total", SqlDbType.Decimal)
+                    {
+                        Value = entity.Total
+                    });
+
+                    command.Parameters.Add(new SqlParameter("@Status", SqlDbType.VarChar)
+                    {
+                        Value = entity.Status
+                    });
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static DataTable CreateOrderItemsTable(IEnumerable<OrderItem> items)
+        {
+            var table = new DataTable();
+
+            table.Columns.Add("OrderId", typeof(Guid));
+            table.Columns.Add("ProductId", typeof(Guid));
+            table.Columns.Add("ProductName", typeof(string));
+            table.Columns.Add("Quantity", typeof(int));
+            table.Columns.Add("UnitPrice", typeof(decimal));
+            table.Columns.Add("Subtotal", typeof(decimal));
+
+            foreach (var item in items)
+            {
+                table.Rows.Add(
+                    item.OrderId,
+                    item.ProductId,
+                    item.ProductName,
+                    item.Quantity,
+                    item.UnitPrice,
+                    item.Subtotal
+                );
+            }
+
+            return table;
+        }
+    }
+}

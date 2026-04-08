@@ -130,7 +130,7 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
                     command.CommandText = "OBTER_PRODUTO_POR_ID";
                     command.CommandType = CommandType.StoredProcedure;
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int) { Value = id });
+                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
 
                     connection.Open();
 
