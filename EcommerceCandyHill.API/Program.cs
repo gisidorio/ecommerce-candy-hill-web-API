@@ -1,6 +1,7 @@
+using EcommerceCandyHill.Application.Orders.Commands;
+using EcommerceCandyHill.Application.Orders.Queries;
 using EcommerceCandyHill.Application.PaymentMethods.Commands;
 using EcommerceCandyHill.Application.PaymentMethods.Queries;
-using EcommerceCandyHill.Application.PaymentMethods.Queries.DTO;
 using EcommerceCandyHill.Application.ProductFAQs.Commands;
 using EcommerceCandyHill.Application.ProductFAQs.Queries;
 using EcommerceCandyHill.Application.ProductImages.Commands;
@@ -96,6 +97,16 @@ builder.Services.AddTransient<IPaymentMethodCommandService, PaymentMethodCommand
 builder.Services.AddTransient<IPaymentMethodDomainService, PaymentMethodDomainService>();
 builder.Services.AddTransient<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddTransient<IPaymentMethodValidator, PaymentMethodValidator>();
+
+#endregion
+
+#region Dependency Injection for Orders
+
+builder.Services.AddTransient<IOrderQueryService, OrderQueryService>();
+builder.Services.AddTransient<IOrderCommandService, OrderCommandService>();
+builder.Services.AddTransient<IOrderDomainService, OrderDomainService>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IOrderValidator, OrderValidator>();
 
 #endregion
 

@@ -1,4 +1,5 @@
-﻿using EcommerceCandyHill.Application.Tags.Queries.DTO;
+﻿using EcommerceCandyHill.Application.PaymentMethods.Queries.DTO;
+using EcommerceCandyHill.Application.Tags.Queries.DTO;
 using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using System;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EcommerceCandyHill.Application.PaymentMethods.Queries.DTO
+namespace EcommerceCandyHill.Application.PaymentMethods.Queries
 {
     public class PaymentMethodQueryService : IPaymentMethodQueryService
     {
