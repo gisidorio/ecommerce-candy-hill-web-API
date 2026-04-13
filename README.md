@@ -12,12 +12,14 @@ Arquitetura limpa (Clean Architecture)
 Boas práticas de desenvolvimento (SOLID, Clean Code)
 Testes automatizados
 Integração com Inteligência Artificial
-🧠 - Diferenciais Técnicos
-🤖 - Agentes de IA para recomendações inteligentes de produtos
-🧪 - Testes Unitários para validação de regras de negócio (Domain e Services)
-🔗 - Testes de Integração para garantir persistência e comunicação com banco de dados
-🧱 - Arquitetura baseada em Clean Architecture
-📦 - Separação clara de responsabilidades (Domain, Application, Infrastructure, API)
+    - Diferenciais Técnicos
+    - Agentes de IA para recomendações inteligentes de produtos
+    - Testes Unitários para validação de regras de negócio (Domain e Services)
+    - Testes de Integração para garantir persistência e comunicação com banco de dados
+    - Arquitetura baseada em Clean Architecture
+    - Separação clara de responsabilidades (Domain, Application, Infrastructure, API)
+
+
 🏗️ - Arquitetura do Projeto
 
 O projeto segue o padrão de camadas:
