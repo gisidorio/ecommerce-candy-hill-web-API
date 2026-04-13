@@ -1,78 +1,68 @@
-🛒 CandyHill E-commerce
+# 🛒 CandyHill E-commerce
 
-Sistema de e-commerce desenvolvido com foco em boas práticas de arquitetura, escalabilidade e qualidade de código, utilizando .NET no backend e integração com Inteligência Artificial.
+Sistema de e-commerce desenvolvido com foco em arquitetura limpa, testes automatizados e integração com Inteligência Artificial.
 
-🚀 Sobre o Projeto
+---
 
-O CandyHill E-commerce é uma aplicação backend que simula um sistema completo de vendas online, incluindo gestão de pedidos, produtos e usuários.
+## 🚀 Sobre o Projeto
 
-O projeto foi desenvolvido com foco em:
+Aplicação backend que simula um e-commerce completo, incluindo gestão de pedidos, produtos e usuários.<br>
+Desenvolvido com foco em boas práticas de mercado e código escalável.
 
-Arquitetura limpa (Clean Architecture)
-Boas práticas de desenvolvimento (SOLID, Clean Code)
-Testes automatizados
-Integração com Inteligência Artificial
-    - Diferenciais Técnicos
-    - Agentes de IA para recomendações inteligentes de produtos
-    - Testes Unitários para validação de regras de negócio (Domain e Services)
-    - Testes de Integração para garantir persistência e comunicação com banco de dados
-    - Arquitetura baseada em Clean Architecture
-    - Separação clara de responsabilidades (Domain, Application, Infrastructure, API)
+---
 
+## 🧠 Diferenciais Técnicos
 
-🏗️ - Arquitetura do Projeto
+🤖 Agentes de IA para recomendações inteligentes de produtos<br>
+🧪 Testes Unitários para validação de regras de negócio<br>
+🔗 Testes de Integração para persistência e banco de dados<br>
+🧱 Clean Architecture + SOLID<br>
+📦 Separação de responsabilidades (Domain, Application, Infrastructure, API)
 
-O projeto segue o padrão de camadas:
+---
+
+## 🏗️ Arquitetura
 
 API → Application → Domain → Infrastructure
-📌 Camadas:
-- API → Controllers e configuração
-- Application → Casos de uso e interfaces
-- Domain → Entidades e regras de negócio
-- Infrastructure → Acesso a dados, integrações externas e IA
-  
-🤖 Uso de Inteligência Artificial
 
-O sistema utiliza agentes de IA para:
+---
 
-Recomendar produtos com base no comportamento do usuário
-Sugerir itens relacionados no carrinho
-Melhorar a experiência de compra
-🧪 Estratégia de Testes
+## 🤖 Inteligência Artificial
 
-O projeto segue o conceito da Test Pyramid:
+Uso de IA para:<br>
 
-✔ Testes Unitários
-- Validação de regras de negócio
-- Cálculo de pedidos
-- Regras de domínio
-  
-✔ Testes de Integração
-- Persistência de dados
-- Execução de Stored Procedures
-- Comunicação com banco de dados
-  
-🛠️ Tecnologias Utilizadas
-- .NET / C#
-- ASP.NET Core
-- SQL Server
-- ADO.NET
-- xUnit
-- Moq
-  
-Aprendendo Integração com IA (Semantic Kernel / OpenAI)
-📦 Funcionalidades
-- Cadastro de usuários
-- Gerenciamento de produtos
-- Criação de pedidos
-- Cálculo automático de total
-- Integração com métodos de pagamento
-- Sistema de recomendação com IA
-  
-🎯 Objetivo do Projeto
+* Recomendações de produtos<br>
+* Sugestões no carrinho<br>
+* Melhoria da experiência do usuário
 
-Este projeto foi desenvolvido com o objetivo de:
-- Demonstrar habilidades em desenvolvimento backend
-- Aplicar boas práticas de arquitetura
-- Utilizar testes automatizados de forma profissional
-- Explorar o uso de Inteligência Artificial em aplicações reais
+---
+
+## 🧪 Testes
+
+✔ Testes Unitários → regras de negócio (Services e Domain)<br>
+✔ Testes de Integração → Repository e banco de dados
+
+---
+
+## 🛠️ Tecnologias
+
+.NET | ASP.NET Core | SQL Server | ADO.NET | xUnit | Moq | FluentAssertions | Docker | IA
+
+---
+
+## 🎯 Objetivo
+
+Projeto desenvolvido para demonstrar habilidades em backend, arquitetura limpa, testes automatizados e uso de IA em aplicações reais.
+
+---
+
+## 📈 Próximos Passos
+
+JWT | Angular | CI/CD | AWS | Evolução dos agentes de IA
+
+---
+
+## 👨‍💻 Autor
+
+Gabriel Gonçalves Isidorio<br>
+Desenvolvedor .NET focado em backend, APIs e arquitetura limpa
