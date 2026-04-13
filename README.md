@@ -46,7 +46,7 @@ Uso de IA para:<br>
 
 ## 🛠️ Tecnologias
 
-.NET | ASP.NET Core | SQL Server | ADO.NET | xUnit | Moq | FluentAssertions | Docker | IA
+.NET | ASP.NET Core | SQL Server | ADO.NET | xUnit | Moq | IA
 
 ---
 
