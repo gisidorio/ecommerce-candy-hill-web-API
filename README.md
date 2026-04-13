@@ -24,7 +24,7 @@ O projeto segue o padrão de camadas:
 
 API → Application → Domain → Infrastructure
 📌 Camadas:
-API → Controllers e configuração
+- API → Controllers e configuração
 Application → Casos de uso e interfaces
 Domain → Entidades e regras de negócio
 Infrastructure → Acesso a dados, integrações externas e IA
