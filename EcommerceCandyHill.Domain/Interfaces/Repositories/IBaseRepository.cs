@@ -9,14 +9,14 @@ namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
     public interface IBaseRepository<T>
     {
-        Guid Save(T entity);
+        Task<Guid> SaveAsync(T entity);
 
-        List<T> GetAll();
+        Task<List<T>> GetAllAsync();
 
-        T? GetById(Guid id);
+        Task<T?> GetByIdAsync(Guid id);
 
-        void Update(T entity);
+        Task UpdateAsync(T entity);
 
-        void Deactivate(Guid id);
+        Task DeactivateAsync(Guid id);
     }
 }

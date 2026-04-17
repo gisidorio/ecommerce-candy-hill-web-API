@@ -28,7 +28,7 @@ namespace EcommerceCandyHill.Application.Orders.Commands
             _orderValidator = orderValidator;
         }
 
-        public ValidationResult Create(CreateOrderCommand command)
+        public async Task<ValidationResult> Create(CreateOrderCommand command)
         {
             var validation = _orderValidator.Validate(command);
 
@@ -52,7 +52,7 @@ namespace EcommerceCandyHill.Application.Orders.Commands
 
             foreach (var item in command.Items)
             {
-                var product = _productDomainService.GetById(item.ProductId);
+                var product = await _productDomainService.GetById(item.ProductId);
 
                 if (product is null)
                 {
@@ -86,12 +86,12 @@ namespace EcommerceCandyHill.Application.Orders.Commands
             order.Total = Total;
             order.Items = items;
 
-            _orderDomainService.Save(order);
+            await _orderDomainService.Save(order);
 
             return validation;
         }
 
-        public ValidationResult Update(UpdateOrderCommand command)
+        public async Task<ValidationResult> Update(UpdateOrderCommand command)
         {
             var validation = _orderValidator.Validate(command);
 
@@ -100,7 +100,7 @@ namespace EcommerceCandyHill.Application.Orders.Commands
                 return validation;
             }
 
-            var order = _orderDomainService.GetById(command.Id);
+            var order = await _orderDomainService.GetById(command.Id);
 
             if (order == null)
             {
@@ -118,7 +118,7 @@ namespace EcommerceCandyHill.Application.Orders.Commands
                 Status = command.Status
             };
 
-            _orderDomainService.Update(orderUpdate);
+            await _orderDomainService.Update(orderUpdate);
 
             return validation;
         }

@@ -18,221 +18,206 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
         public ProductRepository(IDbConnectionFactory connectionFactory)
         {
-            _connectionFactory = connectionFactory;
+            _connectionFactory = connectionFactory
+                ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
 
-        public void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds)
+        public async Task AddTagsToProductAsync(Guid productId, IEnumerable<Guid> tagIds)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductTag_InsertBatch";
+            command.CommandType = CommandType.StoredProcedure;
+
+            var productIdParam = command.CreateParameter();
+            productIdParam.ParameterName = "@productId";
+            productIdParam.DbType = DbType.Guid;
+            productIdParam.Value = productId;
+            command.Parameters.Add(productIdParam);
+
+            var table = new DataTable();
+            table.Columns.Add("TagId", typeof(Guid));
+
+            foreach (var tagId in tagIds)
             {
-                command.CommandText = "usp_ProductTag_InsertBatch";
-                command.CommandType = CommandType.StoredProcedure;
-
-                var ProductIdParam = command.CreateParameter();
-                ProductIdParam.ParameterName = "@productId";
-                ProductIdParam.DbType = DbType.Guid;
-                ProductIdParam.Value = productId;
-                command.Parameters.Add(ProductIdParam);
-
-                var table = new DataTable();
-                table.Columns.Add("TagId", typeof(Guid));
-
-                foreach (var roleId in tagIds)
-                {
-                    table.Rows.Add(roleId);
-                }
-
-                var tvpParam = command.CreateParameter();
-                tvpParam.ParameterName = "@tagIds";
-                tvpParam.Value = table;
-
-                if (tvpParam is SqlParameter sqlParam)
-                {
-                    sqlParam.SqlDbType = SqlDbType.Structured;
-                    sqlParam.TypeName = "dbo.TagIdList";
-                }
-
-                command.Parameters.Add(tvpParam);
-
-                connection.Open();
-                command.ExecuteNonQuery();
+                table.Rows.Add(tagId);
             }
+
+            var tvpParam = command.CreateParameter();
+            tvpParam.ParameterName = "@tagIds";
+            tvpParam.Value = table;
+
+            if (tvpParam is SqlParameter sqlParam)
+            {
+                sqlParam.SqlDbType = SqlDbType.Structured;
+                sqlParam.TypeName = "dbo.TagIdList";
+            }
+
+            command.Parameters.Add(tvpParam);
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Product_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Product_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAllAsync()
         {
             var products = new List<Product>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "USP_OBTER_TODOS_PRODUTOS";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var product = new Product
                 {
-                    command.CommandText = "USP_OBTER_TODOS_PRODUTOS";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                    Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Product product = new Product
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            products.Add(product);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                products.Add(product);
             }
 
             return products;
         }
 
-        public Product? GetById(Guid id)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
             Product? product = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "OBTER_PRODUTO_POR_ID";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                product = new Product
                 {
-                    command.CommandText = "OBTER_PRODUTO_POR_ID";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            product = new Product
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Price = reader.GetDecimal(reader.GetOrdinal("Price")),
-                                Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Price = reader.GetDecimal(reader.GetOrdinal("Price")),
+                    Quantity = reader.GetInt32(reader.GetOrdinal("Quantity")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return product;
         }
 
-        public Guid Save(Product product)
+        public async Task<Guid> SaveAsync(Product product)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Product_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Product_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = product.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = product.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+            {
+                Value = product.Name
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                    {
-                        Value = product.Name
-                    });
+            command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
+            {
+                Value = product.Price
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
-                    {
-                        Value = product.Price
-                    });
+            command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
+            {
+                Value = product.Quantity
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
-                    {
-                        Value = product.Quantity
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = product.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = product.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return product.Id;
         }
 
-        public void Update(Product product)
+        public async Task UpdateAsync(Product product)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Product_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                command.CommandText = "usp_Product_Update";
-                command.CommandType = CommandType.StoredProcedure;
+                Value = product.Id
+            });
 
-                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                {
-                    Value = product.Id
-                });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+            {
+                Value = product.Name
+            });
 
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                {
-                    Value = product.Name
-                });
+            command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
+            {
+                Value = product.Price
+            });
 
-                command.Parameters.Add(new SqlParameter("@Price", SqlDbType.Decimal)
-                {
-                    Value = product.Price
-                });
+            command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
+            {
+                Value = product.Quantity
+            });
 
-                command.Parameters.Add(new SqlParameter("@Quantity", SqlDbType.Int)
-                {
-                    Value = product.Quantity
-                });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = product.IsActive
+            });
 
-                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                {
-                    Value = product.IsActive
-                });
-
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

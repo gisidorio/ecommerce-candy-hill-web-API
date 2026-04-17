@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Queries
 {
     public interface IPaymentMethodQueryService
     {
-        List<GetAllPaymentMethodsQuery> GetAll();
+        Task<List<GetAllPaymentMethodsQuery>> GetAll();
     }
 }

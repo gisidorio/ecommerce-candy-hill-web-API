@@ -19,111 +19,96 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_PaymentMethod_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<Order> GetAll()
+        public async Task<List<Order>> GetAllAsync()
         {
             var orders = new List<Order>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Order_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var order = new Order
                 {
-                    command.CommandText = "usp_Order_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
+                    UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
+                    PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
+                    Total = reader.GetDecimal(reader.GetOrdinal("Total")),
+                    Status = reader.GetString(reader.GetOrdinal("Status")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var order = new Order
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
-                                UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
-                                PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
-                                Total = reader.GetDecimal(reader.GetOrdinal("Total")),
-                                Status = reader.GetString(reader.GetOrdinal("Status")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            orders.Add(order);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                orders.Add(order);
             }
 
             return orders;
         }
 
-        public Order? GetById(Guid id)
+        public async Task<Order?> GetByIdAsync(Guid id)
         {
             Order? order = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Order_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                order = new Order
                 {
-                    command.CommandText = "usp_Order_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            order = new Order
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
-                                UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
-                                PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
-                                Total = reader.GetDecimal(reader.GetOrdinal("Total")),
-                                Status = reader.GetString(reader.GetOrdinal("Status")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    OrderNumber = reader.GetInt64(reader.GetOrdinal("OrderNumber")),
+                    UserId = reader.GetGuid(reader.GetOrdinal("UserId")),
+                    PaymentMethodId = reader.GetGuid(reader.GetOrdinal("PaymentMethodId")),
+                    Total = reader.GetDecimal(reader.GetOrdinal("Total")),
+                    Status = reader.GetString(reader.GetOrdinal("Status")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return order;
         }
 
-        public Guid Save(Order entity)
+        public async Task<Guid> SaveAsync(Order entity)
         {
-            using var connection = _connectionFactory.CreateDatabaseConnection();
-            using var command = connection.CreateCommand();
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
 
             command.CommandText = "usp_Order_InsertWithItems";
             command.CommandType = CommandType.StoredProcedure;
@@ -163,55 +148,52 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
 
             command.Parameters.Add(itemsParam);
 
-            connection.Open();
-            command.ExecuteNonQuery();
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return entity.Id;
         }
 
-        public void Update(Order entity)
+        public async Task UpdateAsync(Order entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Order_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Order_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@OrderNumber", SqlDbType.BigInt)
+            {
+                Value = entity.OrderNumber
+            });
 
-                    command.Parameters.Add(new SqlParameter("@OrderNumber", SqlDbType.BigInt)
-                    {
-                        Value = entity.OrderNumber
-                    });
+            command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.UserId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.UserId
-                    });
+            command.Parameters.Add(new SqlParameter("@PaymentMethodId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.PaymentMethodId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@PaymentMethodId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.PaymentMethodId
-                    });
+            command.Parameters.Add(new SqlParameter("@Total", SqlDbType.Decimal)
+            {
+                Value = entity.Total
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Total", SqlDbType.Decimal)
-                    {
-                        Value = entity.Total
-                    });
+            command.Parameters.Add(new SqlParameter("@Status", SqlDbType.VarChar)
+            {
+                Value = entity.Status
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Status", SqlDbType.VarChar)
-                    {
-                        Value = entity.Status
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
         private static DataTable CreateOrderItemsTable(IEnumerable<OrderItem> items)

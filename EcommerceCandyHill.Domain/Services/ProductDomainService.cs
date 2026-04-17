@@ -15,37 +15,38 @@ namespace EcommerceCandyHill.Domain.Services
 
         public ProductDomainService(IProductRepository productRepository)
         {
-            _productRepository = productRepository;
+            _productRepository = productRepository
+                ?? throw new ArgumentNullException(nameof(productRepository));
         }
 
-        public Guid Save(Product product)
+        public async Task<Guid> SaveAsync(Product product)
         {
-            return _productRepository.Save(product);
+            return await _productRepository.SaveAsync(product);
         }
 
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAllAsync()
         {
-            return _productRepository.GetAll();
+            return await _productRepository.GetAllAsync();
         }
 
-        public void Update(Product product)
+        public async Task UpdateAsync(Product product)
         {
-            _productRepository.Update(product);
+            await _productRepository.UpdateAsync(product);
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            _productRepository.Deactivate(id);
+            await _productRepository.DeactivateAsync(id);
         }
 
-        public Product? GetById(Guid id)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
-            return _productRepository.GetById(id);
+            return await _productRepository.GetByIdAsync(id);
         }
 
-        public void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds)
+        public async Task AddTagsToProductAsync(Guid productId, IEnumerable<Guid> tagIds)
         {
-            _productRepository.AddTagsToProduct(productId, tagIds);
+            await _productRepository.AddTagsToProductAsync(productId, tagIds);
         }
     }
 }

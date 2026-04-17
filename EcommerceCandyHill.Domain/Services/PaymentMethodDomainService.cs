@@ -20,27 +20,27 @@ namespace EcommerceCandyHill.Domain.Services
 
         public void Deactivate(Guid id)
         {
-            _paymentMethodRepository.Deactivate(id);
+            _paymentMethodRepository.DeactivateAsync(id);
         }
 
         public List<PaymentMethod> GetAll()
         {
-            return _paymentMethodRepository.GetAll();
+            return _paymentMethodRepository.GetAllAsync();
         }
 
         public PaymentMethod? GetById(Guid id)
         {
-            return _paymentMethodRepository.GetById(id);
+            return _paymentMethodRepository.GetByIdAsync(id);
         }
 
         public Guid Save(PaymentMethod paymentMethod)
         {
-            return _paymentMethodRepository.Save(paymentMethod);
+            return _paymentMethodRepository.SaveAsync(paymentMethod);
         }
 
         public void Update(PaymentMethod paymentMethod)
         {
-            _paymentMethodRepository.Update(paymentMethod);
+            _paymentMethodRepository.UpdateAsync(paymentMethod);
         }
     }
 }

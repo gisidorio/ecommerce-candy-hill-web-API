@@ -19,159 +19,138 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_PaymentMethod_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<PaymentMethod> GetAll()
+        public async Task<List<PaymentMethod>> GetAllAsync()
         {
             var paymentMethods = new List<PaymentMethod>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                paymentMethods.Add(new PaymentMethod
                 {
-                    command.CommandText = "usp_PaymentMethod_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var paymentMethod = new PaymentMethod
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            paymentMethods.Add(paymentMethod);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                });
             }
 
             return paymentMethods;
         }
 
-        public PaymentMethod? GetById(Guid id)
+        public async Task<PaymentMethod?> GetByIdAsync(Guid id)
         {
             PaymentMethod? paymentMethod = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                paymentMethod = new PaymentMethod
                 {
-                    command.CommandText = "usp_PaymentMethod_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            paymentMethod = new PaymentMethod
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return paymentMethod;
         }
 
-        public Guid Save(PaymentMethod entity)
+        public async Task<Guid> SaveAsync(PaymentMethod entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_PaymentMethod_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+            {
+                Value = entity.Name
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                    {
-                        Value = entity.Name
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return entity.Id;
         }
 
-        public void Update(PaymentMethod entity)
+        public async Task UpdateAsync(PaymentMethod entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_PaymentMethod_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                command.CommandText = "usp_PaymentMethod_Update";
-                command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                {
-                    Value = entity.Id
-                });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
+            {
+                Value = entity.Name ?? (object)DBNull.Value
+            });
 
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                {
-                    Value = entity.Name ?? (object)DBNull.Value
-                });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                {
-                    Value = entity.IsActive
-                });
-
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

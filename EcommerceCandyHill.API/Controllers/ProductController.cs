@@ -21,9 +21,9 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var products = _productQueryService.GetAll();
+            var products = await _productQueryService.GetAllAsync();
 
             if (!products.Any())
                 return NoContent();
@@ -32,9 +32,9 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateProductCommand command)
+        public async Task<IActionResult> Save([FromBody] CreateProductCommand command)
         {
-            var result = _productAppService.Save(command);
+            var result = await _productAppService.SaveAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -43,12 +43,12 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateProductCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do produto é diferente do id informado na rota.");
 
-            var result = _productAppService.Update(command);
+            var result = await _productAppService.UpdateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -57,12 +57,11 @@ namespace EcommerceCandyHill.MVC.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeleteProductCommand { Id = id };
 
-            var result = _productAppService.Delete(command);
-
+            var result = await _productAppService.DeleteAsync(command);
             if (!result.IsValid)
                 return BadRequest(result.Message);
 

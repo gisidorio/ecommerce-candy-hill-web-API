@@ -24,7 +24,7 @@ namespace EcommerceCandyHill.Application.Products.Commands
         }
 
 
-        public ValidationResult Save(CreateProductCommand command)
+        public async Task<ValidationResult> SaveAsync(CreateProductCommand command)
         {
             var validation = _productValidator.Validate(command);
 
@@ -41,24 +41,24 @@ namespace EcommerceCandyHill.Application.Products.Commands
                 IsActive = command.IsActive
             };
 
-            var productId = _productDomainService.Save(product);
+            var productId = await _productDomainService.SaveAsync(product);
 
             if (command.TagIds != null && command.TagIds.Any())
             {
-                _productDomainService.AddTagsToProduct(productId, command.TagIds);
+                await _productDomainService.AddTagsToProductAsync(productId, command.TagIds);
             }
 
             return validation;
         }
 
-        public ValidationResult Update(UpdateProductCommand command)
+        public async Task<ValidationResult> UpdateAsync(UpdateProductCommand command)
         {
             var validation = _productValidator.Validate(command);
 
             if (!validation.IsValid)
                 return validation;
 
-            var product = _productDomainService.GetById(command.Id);
+            var product = await _productDomainService.GetByIdAsync(command.Id);
 
             if (product == null)
             {
@@ -76,16 +76,16 @@ namespace EcommerceCandyHill.Application.Products.Commands
                 IsActive = command.IsActive
             };
 
-            _productDomainService.Update(productUpdate);
+            await _productDomainService.UpdateAsync(productUpdate);
 
             return validation;
         }
 
-        public ValidationResult Delete(DeleteProductCommand command)
+        public async Task<ValidationResult> DeleteAsync(DeleteProductCommand command)
         {            
             var validation = _productValidator.Validate(command);
 
-            var product = _productDomainService.GetById(command.Id);
+            var product = await _productDomainService.GetByIdAsync(command.Id);
 
             if (product == null)
             {
@@ -100,7 +100,8 @@ namespace EcommerceCandyHill.Application.Products.Commands
             if (!validation.IsValid)
                 return validation;            
 
-            _productDomainService.Deactivate(command.Id);
+            await _productDomainService.DeactivateAsync(command.Id);
+
             return validation;
         }
     }

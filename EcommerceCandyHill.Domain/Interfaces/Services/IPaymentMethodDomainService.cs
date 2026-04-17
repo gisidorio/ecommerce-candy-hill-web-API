@@ -9,10 +9,10 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IPaymentMethodDomainService
     {
-        Guid Save(PaymentMethod paymentMethod);
-        List<PaymentMethod> GetAll();
-        void Update(PaymentMethod paymentMethod);
-        void Deactivate(Guid id);
-        PaymentMethod? GetById(Guid id);
+        Task<Guid> SaveAsync(PaymentMethod paymentMethod);
+        Task<List<PaymentMethod>> GetAllAsync();
+        Task UpdateAsync(PaymentMethod paymentMethod);
+        Task DeactivateAsync(Guid id);
+        Task<PaymentMethod?> GetByIdAsync(Guid id);
     }
 }

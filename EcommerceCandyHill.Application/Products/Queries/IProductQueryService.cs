@@ -1,4 +1,5 @@
-﻿using EcommerceCandyHill.Domain.Entities;
+﻿using EcommerceCandyHill.Application.Products.Queries.DTO;
+using EcommerceCandyHill.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace EcommerceCandyHill.Application.Products.Queries
 {
     public interface IProductQueryService
     {
-        List<Product> GetAll();
+        Task<List<GetAllProductsQuery>> GetAllAsync();
     }
 }

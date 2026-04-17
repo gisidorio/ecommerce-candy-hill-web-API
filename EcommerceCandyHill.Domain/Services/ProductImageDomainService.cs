@@ -20,27 +20,27 @@ namespace EcommerceCandyHill.Domain.Services
 
         public void Deactivate(Guid id)
         {
-            _imageProductRepository.Deactivate(id);
+            _imageProductRepository.DeactivateAsync(id);
         }
 
         public List<ProductImage> GetAll()
         {
-            return _imageProductRepository.GetAll();
+            return _imageProductRepository.GetAllAsync();
         }
 
         public ProductImage? GetById(Guid id)
         {
-            return _imageProductRepository.GetById(id);
+            return _imageProductRepository.GetByIdAsync(id);
         }
 
         public Guid Save(ProductImage productImage)
         {
-            return _imageProductRepository.Save(productImage);
+            return _imageProductRepository.SaveAsync(productImage);
         }
 
         public void Update(ProductImage productImage)
         {
-            _imageProductRepository.Update(productImage);
+            _imageProductRepository.UpdateAsync(productImage);
         }
     }
 }

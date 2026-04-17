@@ -11,8 +11,8 @@ namespace EcommerceCandyHill.Application.Products.Commands
 {
     public interface IProductCommandService
     {
-        ValidationResult Save(CreateProductCommand command);
-        ValidationResult Update(UpdateProductCommand command);
-        ValidationResult Delete(DeleteProductCommand command);
+        Task<ValidationResult> SaveAsync(CreateProductCommand command);
+        Task<ValidationResult> UpdateAsync(UpdateProductCommand command);
+        Task<ValidationResult> DeleteAsync(DeleteProductCommand command);
     }
 }

@@ -23,7 +23,7 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
             _paymentMethodValidator = paymentMethodValidator;
         }
 
-        public ValidationResult Create(CreatePaymentMethodCommand command)
+        public async Task<ValidationResult> Create(CreatePaymentMethodCommand command)
         {
             var validation = _paymentMethodValidator.Validate(command);
 
@@ -39,17 +39,16 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
                 IsActive = command.IsActive
             };
 
-            _paymentMethodDomainService.Save(paymentMethod);
+            await _paymentMethodDomainService.SaveAsync(paymentMethod);
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeletePaymentMethodCommand command)
+        public async Task<ValidationResult> Deactivate(DeletePaymentMethodCommand command)
         {
             var validation = _paymentMethodValidator.Validate(command);
 
-            var product = _paymentMethodDomainService.GetById(command.Id);
-
+            var product = await _paymentMethodDomainService.GetByIdAsync(command.Id);
             if (product == null)
             {
                 validation.AddError("Forma de pagamento não encontrada.");
@@ -63,11 +62,11 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _paymentMethodDomainService.Deactivate(command.Id);
+            await _paymentMethodDomainService.DeactivateAsync(command.Id);
             return validation;
         }
 
-        public ValidationResult Update(UpdatePaymentMethodCommand command)
+        public async Task<ValidationResult> Update(UpdatePaymentMethodCommand command)
         {
             var validation = _paymentMethodValidator.Validate(command);
 
@@ -76,7 +75,7 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
                 return validation;
             }
 
-            var tag = _paymentMethodDomainService.GetById(command.Id);
+            var tag = await _paymentMethodDomainService.GetByIdAsync(command.Id);
 
             if (tag == null)
             {
@@ -91,7 +90,7 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
                 IsActive = command.IsActive
             };
 
-            _paymentMethodDomainService.Update(paymentMethodUpdate);
+            await _paymentMethodDomainService.UpdateAsync(paymentMethodUpdate);
 
             return validation;
         }

@@ -35,9 +35,9 @@ namespace EcommerceCandyHill.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Cliente")]
-        public IActionResult Save([FromBody] CreateOrderCommand command)
+        public async Task<IActionResult> Save([FromBody] CreateOrderCommand command)
         {
-            var result = _orderCommandService.Create(command);
+            var result = await _orderCommandService.Create(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -46,12 +46,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateOrderCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOrderCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do pedido é diferente do id informado na rota.");
 
-            var result = _orderCommandService.Update(command);
+            var result = await _orderCommandService.Update(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

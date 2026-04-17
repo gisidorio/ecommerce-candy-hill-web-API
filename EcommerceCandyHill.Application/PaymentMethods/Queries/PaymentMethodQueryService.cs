@@ -19,9 +19,9 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Queries
             _paymentMethodDomainService = tagDomainService;
         }
 
-        public List<GetAllPaymentMethodsQuery> GetAll()
+        public async Task<List<GetAllPaymentMethodsQuery>> GetAll()
         {
-            var paymentMethods = _paymentMethodDomainService.GetAll();
+            var paymentMethods = await _paymentMethodDomainService.GetAllAsync();
             var paymentMethodsQueries = new List<GetAllPaymentMethodsQuery>();
 
             foreach (var tag in paymentMethods)

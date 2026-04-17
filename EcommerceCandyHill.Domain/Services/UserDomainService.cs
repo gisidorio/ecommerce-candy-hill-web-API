@@ -25,27 +25,27 @@ namespace EcommerceCandyHill.Domain.Services
 
         public void Deactivate(Guid id)
         {
-            _userRepository.Deactivate(id);
+            _userRepository.DeactivateAsync(id);
         }
 
         public List<User> GetAll()
         {
-            return _userRepository.GetAll();
+            return _userRepository.GetAllAsync();
         }
 
         public User? GetById(Guid id)
         {
-            return _userRepository.GetById(id);
+            return _userRepository.GetByIdAsync(id);
         }
 
         public Guid Save(User user)
         {
-            return _userRepository.Save(user);
+            return _userRepository.SaveAsync(user);
         }
 
         public void Update(User user)
         {
-            _userRepository.Update(user);
+            _userRepository.UpdateAsync(user);
         }
 
         public void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
