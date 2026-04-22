@@ -19,175 +19,162 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductFAQ_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductFAQ_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<ProductFAQ> GetAll()
+        public async Task<List<ProductFAQ>> GetAllAsync()
         {
             var productFAQs = new List<ProductFAQ>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductFAQ_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var productFAQ = new ProductFAQ
                 {
-                    command.CommandText = "usp_ProductFAQ_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Question = reader.GetString(reader.GetOrdinal("Question")),
+                    Answer = reader.GetString(reader.GetOrdinal("Answer")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var productFAQ = new ProductFAQ
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Question = reader.GetString(reader.GetOrdinal("Question")),
-                                Answer = reader.GetString(reader.GetOrdinal("Answer")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            productFAQs.Add(productFAQ);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                productFAQs.Add(productFAQ);
             }
 
             return productFAQs;
         }
 
-        public ProductFAQ? GetById(Guid id)
+        public async Task<ProductFAQ?> GetByIdAsync(Guid id)
         {
             ProductFAQ? productFAQ = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductFAQ_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                productFAQ = new ProductFAQ
                 {
-                    command.CommandText = "usp_ProductFAQ_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            productFAQ = new ProductFAQ
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Question = reader.GetString(reader.GetOrdinal("Question")),
-                                Answer = reader.GetString(reader.GetOrdinal("Answer")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Question = reader.GetString(reader.GetOrdinal("Question")),
+                    Answer = reader.GetString(reader.GetOrdinal("Answer")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return productFAQ;
         }
 
-        public Guid Save(ProductFAQ entity)
+        public async Task<Guid> SaveAsync(ProductFAQ entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductFAQ_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductFAQ_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.ProductId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.ProductId
-                    });
+            command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
+            {
+                Value = entity.Question
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
-                    {
-                        Value = entity.Question
-                    });
+            command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
+            {
+                Value = entity.Answer
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
-                    {
-                        Value = entity.Answer
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return entity.Id;
         }
 
-        public void Update(ProductFAQ entity)
+        public async Task UpdateAsync(ProductFAQ entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductFAQ_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductFAQ_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.ProductId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.ProductId
-                    });
+            command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
+            {
+                Value = entity.Question
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar)
-                    {
-                        Value = entity.Question
-                    });
+            command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
+            {
+                Value = entity.Answer
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar)
-                    {
-                        Value = entity.Answer
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

@@ -10,6 +10,6 @@ namespace EcommerceCandyHill.Application.ProductImages.Queries
 {
     public interface IProductImageQueryService
     {
-        List<ProductImage> GetAll();
+        Task<List<GetAllProductImagesQuery>> GetAll();
     }
 }

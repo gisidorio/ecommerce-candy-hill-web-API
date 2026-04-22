@@ -10,8 +10,8 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
 {
     public interface IProductImageCommandService
     {
-        ValidationResult Create(CreateProductImageCommand command);
-        ValidationResult Update(UpdateProductImageCommand command);
-        ValidationResult Deactivate(DeleteProductImageCommand command);
+        Task<ValidationResult> Create(CreateProductImageCommand command);
+        Task<ValidationResult> Update(UpdateProductImageCommand command);
+        Task<ValidationResult> Deactivate(DeleteProductImageCommand command);
     }
 }

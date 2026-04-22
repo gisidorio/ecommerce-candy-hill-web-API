@@ -23,7 +23,7 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
             _productFAQDomainService = productFAQDomainService;
         }
 
-        public ValidationResult Create(CreateProductFAQCommand command)
+        public async Task<ValidationResult> Create(CreateProductFAQCommand command)
         {
             var validation = _productFAQValidator.Validate(command);
 
@@ -41,16 +41,16 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
                 IsActive = command.IsActive
             };
 
-            _productFAQDomainService.Save(productFAQ);
+            await _productFAQDomainService.SaveAsync(productFAQ);
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeleteProductFAQCommand command)
+        public async Task<ValidationResult> Deactivate(DeleteProductFAQCommand command)
         {
             var validation = _productFAQValidator.Validate(command);
 
-            var faq = _productFAQDomainService.GetById(command.Id);
+            var faq = await _productFAQDomainService.GetByIdAsync(command.Id);
 
             if (faq == null)
             {
@@ -65,11 +65,11 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _productFAQDomainService.Deactivate(command.Id);
+            await _productFAQDomainService.DeactivateAsync(command.Id);
             return validation;
         }
 
-        public ValidationResult Update(UpdateProductFAQCommand command)
+        public async Task<ValidationResult> Update(UpdateProductFAQCommand command)
         {
             var validation = _productFAQValidator.Validate(command);
 
@@ -78,7 +78,7 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
                 return validation;
             }
 
-            var faq = _productFAQDomainService.GetById(command.Id);
+            var faq = await _productFAQDomainService.GetByIdAsync(command.Id);
 
             if (faq == null)
             {
@@ -94,7 +94,7 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Commands
                 IsActive = command.IsActive
             };
 
-            _productFAQDomainService.Update(productFAQUpdate);
+            await _productFAQDomainService.UpdateAsync(productFAQUpdate);
 
             return validation;
         }

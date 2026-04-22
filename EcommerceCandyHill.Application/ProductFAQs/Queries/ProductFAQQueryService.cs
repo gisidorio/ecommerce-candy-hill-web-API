@@ -17,9 +17,9 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Queries
             _productFAQDomainService = productFAQDomainService;
         }
 
-        public List<GetAllProductFAQsQuery> GetAll()
+        public async Task<List<GetAllProductFAQsQuery>> GetAllAsync()
         {
-            var productFAQs = _productFAQDomainService.GetAll();
+            var productFAQs = await _productFAQDomainService.GetAllAsync();
             var productFAQsQueries = new List<GetAllProductFAQsQuery>();
 
             foreach (var productFAQ in productFAQs)

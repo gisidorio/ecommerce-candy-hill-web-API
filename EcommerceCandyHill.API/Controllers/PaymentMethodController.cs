@@ -22,9 +22,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var tags = _paymentMethodQueryService.GetAll();
+            var tags = await _paymentMethodQueryService.GetAll();
 
             if (!tags.Any())
                 return NoContent();
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreatePaymentMethodCommand command)
+        public async Task<IActionResult> Save([FromBody] CreatePaymentMethodCommand command)
         {
-            var result = _paymentMethodCommandService.Create(command);
+            var result = await _paymentMethodCommandService.Create(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -44,12 +44,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdatePaymentMethodCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdatePaymentMethodCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id da forma de pagamento é diferente do id informado na rota.");
 
-            var result = _paymentMethodCommandService.Update(command);
+            var result = await _paymentMethodCommandService.Update(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -58,11 +58,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeletePaymentMethodCommand { Id = id };
 
-            var result = _paymentMethodCommandService.Deactivate(command);
+            var result = await _paymentMethodCommandService.Deactivate(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

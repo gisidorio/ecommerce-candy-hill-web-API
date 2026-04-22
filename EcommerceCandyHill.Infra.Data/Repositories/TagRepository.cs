@@ -19,160 +19,140 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Tag_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Tag_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<Tag> GetAll()
+        public async Task<List<Tag>> GetAllAsync()
         {
             var tags = new List<Tag>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Tag_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var tag = new Tag
                 {
-                    command.CommandText = "usp_Tag_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var tag = new Tag
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            tags.Add(tag);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                tags.Add(tag);
             }
 
             return tags;
         }
 
-        public Tag? GetById(Guid id)
+        public async Task<Tag?> GetByIdAsync(Guid id)
         {
             Tag? tag = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Tag_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                tag = new Tag
                 {
-                    command.CommandText = "usp_Tag_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            tag = new Tag
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return tag;
         }
 
-        public Guid Save(Tag entity)
+        public async Task<Guid> SaveAsync(Tag entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Tag_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Tag_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100)
+            {
+                Value = entity.Name
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                    {
-                        Value = entity.Name
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-
-                    command.ExecuteNonQuery();
-
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return entity.Id;
         }
 
-        public void Update(Tag entity)
+        public async Task UpdateAsync(Tag entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_Tag_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_Tag_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100)
+            {
+                Value = entity.Name ?? (object)DBNull.Value
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                    {
-                        Value = entity.Name ?? (object)DBNull.Value
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

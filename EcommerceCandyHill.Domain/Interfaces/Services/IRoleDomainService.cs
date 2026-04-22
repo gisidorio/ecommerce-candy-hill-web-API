@@ -9,11 +9,11 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IRoleDomainService
     {
-        Guid Save(Role role);
-        List<Role> GetAll();
-        void Update(Role role);
-        void Deactivate(Guid id);
-        Role? GetById(Guid id);
+        Task<Guid> SaveAsync(Role role);
+        Task<List<Role>> GetAllAsync();
+        Task UpdateAsync(Role role);
+        Task DeactivateAsync(Guid id);
+        Task<Role?> GetByIdAsync(Guid id);
     }
 }
 

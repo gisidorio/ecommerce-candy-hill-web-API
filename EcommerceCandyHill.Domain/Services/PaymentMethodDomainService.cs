@@ -18,29 +18,29 @@ namespace EcommerceCandyHill.Domain.Services
             _paymentMethodRepository = paymentMethodRepository;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            _paymentMethodRepository.Deactivate(id);
+            await _paymentMethodRepository.DeactivateAsync(id);
         }
 
-        public List<PaymentMethod> GetAll()
+        public async Task<List<PaymentMethod>> GetAllAsync()
         {
-            return _paymentMethodRepository.GetAll();
+            return await _paymentMethodRepository.GetAllAsync();
         }
 
-        public PaymentMethod? GetById(Guid id)
+        public async Task<PaymentMethod?> GetByIdAsync(Guid id)
         {
-            return _paymentMethodRepository.GetById(id);
+            return await _paymentMethodRepository.GetByIdAsync(id);
         }
 
-        public Guid Save(PaymentMethod paymentMethod)
+        public async Task<Guid> SaveAsync(PaymentMethod paymentMethod)
         {
-            return _paymentMethodRepository.Save(paymentMethod);
+            return await _paymentMethodRepository.SaveAsync(paymentMethod);
         }
 
-        public void Update(PaymentMethod paymentMethod)
+        public async Task UpdateAsync(PaymentMethod paymentMethod)
         {
-            _paymentMethodRepository.Update(paymentMethod);
+            await _paymentMethodRepository.UpdateAsync(paymentMethod);
         }
     }
 }

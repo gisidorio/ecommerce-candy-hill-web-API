@@ -1,4 +1,5 @@
-﻿using EcommerceCandyHill.Domain.Entities;
+﻿using EcommerceCandyHill.Application.Products.Queries.DTO;
+using EcommerceCandyHill.Domain.Entities;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,19 @@ namespace EcommerceCandyHill.Application.Products.Queries
             _productService = productService;
         }
 
-        public List<Product> GetAll()
+        public async Task<List<GetAllProductsQuery>> GetAllAsync()
         {
-            return _productService.GetAll();
+            var products = await _productService.GetAllAsync();
+
+            return products.Select(p => new GetAllProductsQuery
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Quantity = p.Quantity,
+                Description = p.Description,
+                IsActive = p.IsActive
+            }).ToList();
         }
     }
 }

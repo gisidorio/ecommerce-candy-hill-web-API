@@ -18,9 +18,27 @@ namespace EcommerceCandyHill.Application.ProductImages.Queries
             _productImageService = productImageService;
         }
 
-        public List<ProductImage> GetAll()
+        public async Task<List<GetAllProductImagesQuery>> GetAll()
         {
-            return _productImageService.GetAll();
+            var productImages = await _productImageService.GetAll();
+            var productsQueries = new List<GetAllProductImagesQuery>();
+
+            foreach (var productImage in productImages) 
+            {
+                var productImageQuery = new GetAllProductImagesQuery 
+                {
+                    Id = productImage.Id,
+                    ImageUrl = productImage.ImageUrl,                     
+                    IsActive = productImage.IsActive, 
+                    IsMain = productImage.IsMain, 
+                    CreatedAt = productImage.CreatedAt 
+                
+                };
+
+                productsQueries.Add(productImageQuery);
+            }
+
+            return productsQueries;
         }
     }
 }

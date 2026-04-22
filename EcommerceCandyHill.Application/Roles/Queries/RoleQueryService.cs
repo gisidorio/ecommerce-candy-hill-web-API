@@ -20,9 +20,9 @@ namespace EcommerceCandyHill.Application.Roles.Queries
             _roleDomainService = roleDomainService;
         }
 
-        public List<GetAllRolesQuery> GetAll()
+        public async Task<List<GetAllRolesQuery>> GetAllAsync()
         {
-            var roles = _roleDomainService.GetAll();
+            var roles = await _roleDomainService.GetAllAsync();
             var roleQueries = new List<GetAllRolesQuery>();
 
             foreach (var role in roles)

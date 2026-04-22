@@ -22,7 +22,7 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
             _productImageValidator = productImageValidator;
         }
 
-        public ValidationResult Create(CreateProductImageCommand command)
+        public async Task<ValidationResult> Create(CreateProductImageCommand command)
         {
             var validation = _productImageValidator.Validate(command);
 
@@ -40,16 +40,16 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
                 IsActive = command.IsActive
             };
 
-            _productImageService.Save(productImage);
+            await _productImageService.Save(productImage);
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeleteProductImageCommand command)
+        public async Task<ValidationResult> Deactivate(DeleteProductImageCommand command)
         {
             var validation = _productImageValidator.Validate(command);
 
-            var product = _productImageService.GetById(command.Id);
+            var product = await _productImageService.GetById(command.Id);
 
             if (product == null)
             {
@@ -64,11 +64,11 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _productImageService.Deactivate(command.Id);
+            await _productImageService.Deactivate(command.Id);
             return validation;
         }
 
-        public ValidationResult Update(UpdateProductImageCommand command)
+        public async Task<ValidationResult> Update(UpdateProductImageCommand command)
         {
             var validation = _productImageValidator.Validate(command);
             
@@ -77,7 +77,7 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
                 return validation;
             }
 
-            var productImage = _productImageService.GetById(command.Id);
+            var productImage = await _productImageService.GetById(command.Id);
 
             if (productImage == null)
             {
@@ -94,7 +94,7 @@ namespace EcommerceCandyHill.Application.ProductImages.Commands
                 IsActive = command.IsActive
             };
 
-            _productImageService.Update(productImageUpdate);
+            await _productImageService.Update(productImageUpdate);
 
             return validation;
         }

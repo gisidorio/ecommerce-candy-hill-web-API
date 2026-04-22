@@ -19,261 +19,227 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
+        public async Task AddRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_UserRole_InsertBatch";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
             {
-                command.CommandText = "usp_UserRole_InsertBatch";
-                command.CommandType = CommandType.StoredProcedure;
+                Value = userId
+            });
 
-                var userIdParam = command.CreateParameter();
-                userIdParam.ParameterName = "@UserId";
-                userIdParam.DbType = DbType.Guid;
-                userIdParam.Value = userId;
-                command.Parameters.Add(userIdParam);
+            var table = CreateRoleIdsTable(roleIds);
 
-                var table = new DataTable();
-                table.Columns.Add("RoleId", typeof(Guid));
+            command.Parameters.Add(new SqlParameter("@RoleIds", SqlDbType.Structured)
+            {
+                TypeName = "dbo.RoleIdList",
+                Value = table
+            });
 
-                foreach (var roleId in roleIds)
-                {
-                    table.Rows.Add(roleId);
-                }
-
-                var tvpParam = command.CreateParameter();
-                tvpParam.ParameterName = "@RoleIds";
-                tvpParam.Value = table;
-
-                if (tvpParam is SqlParameter sqlParam)
-                {
-                    sqlParam.SqlDbType = SqlDbType.Structured;
-                    sqlParam.TypeName = "dbo.RoleIdList";
-                }
-
-                command.Parameters.Add(tvpParam);
-
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_User_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_User_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAllAsync()
         {
             var users = new List<User>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_User_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var user = new User
                 {
-                    command.CommandText = "usp_User_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var user = new User
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Email = reader.GetString(reader.GetOrdinal("Email")),
-                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-
-                            users.Add(user);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                users.Add(user);
             }
 
             return users;
         }
 
-        public User? GetById(Guid id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
             User? user = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_User_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                user = new User
                 {
-                    command.CommandText = "usp_User_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            user = new User
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Email = reader.GetString(reader.GetOrdinal("Email")),
-                                PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
-                                IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
-                                CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    Name = reader.GetString(reader.GetOrdinal("Name")),
+                    Email = reader.GetString(reader.GetOrdinal("Email")),
+                    PasswordHash = reader.GetString(reader.GetOrdinal("PasswordHash")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return user;
         }
 
-        public Guid Save(User user)
+        public async Task<Guid> SaveAsync(User user)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_User_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_User_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = user.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = user.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100)
+            {
+                Value = user.Name
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                    {
-                        Value = user.Name
-                    });
+            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150)
+            {
+                Value = user.Email
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar)
-                    {
-                        Value = user.Email
-                    });
+            command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar, 255)
+            {
+                Value = user.PasswordHash
+            });
 
-                    command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar)
-                    {
-                        Value = user.PasswordHash
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = user.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = user.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return user.Id;
         }
 
-        public void Update(User user)
+        public async Task UpdateAsync(User user)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_User_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                command.CommandText = "usp_User_Update";
-                command.CommandType = CommandType.StoredProcedure;
+                Value = user.Id
+            });
 
-                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                {
-                    Value = user.Id
-                });
+            command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar, 100)
+            {
+                Value = user.Name ?? (object)DBNull.Value
+            });
 
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.VarChar)
-                {
-                    Value = user.Name ?? (object)DBNull.Value
-                });
+            command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar, 150)
+            {
+                Value = user.Email ?? (object)DBNull.Value
+            });
 
-                command.Parameters.Add(new SqlParameter("@Email", SqlDbType.VarChar)
-                {
-                    Value = user.Email ?? (object)DBNull.Value
-                });
+            command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar, 255)
+            {
+                Value = user.PasswordHash ?? (object)DBNull.Value
+            });
 
-                command.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.VarChar)
-                {
-                    Value = user.PasswordHash ?? (object)DBNull.Value
-                });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = user.IsActive
+            });
 
-                command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                {
-                    Value = user.IsActive
-                });
-
-                connection.Open();
-                command.ExecuteNonQuery();
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
+        public async Task UpdateRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
-            using (var command = connection.CreateCommand())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_UserRole_UpdateBatch";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@UserId", SqlDbType.UniqueIdentifier)
             {
-                command.CommandText = "usp_UserRole_UpdateBatch";
-                command.CommandType = CommandType.StoredProcedure;
+                Value = userId
+            });
 
-                var userIdParam = command.CreateParameter();
-                userIdParam.ParameterName = "@UserId";
-                userIdParam.DbType = DbType.Guid;
-                userIdParam.Value = userId;
-                command.Parameters.Add(userIdParam);
+            var table = CreateRoleIdsTable(roleIds);
 
-                var table = new DataTable();
-                table.Columns.Add("RoleId", typeof(Guid));
+            command.Parameters.Add(new SqlParameter("@RoleIds", SqlDbType.Structured)
+            {
+                TypeName = "dbo.RoleIdList",
+                Value = table
+            });
 
-                foreach (var roleId in roleIds)
-                {
-                    table.Rows.Add(roleId);
-                }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+        }
 
-                var tvpParam = command.CreateParameter();
-                tvpParam.ParameterName = "@RoleIds";
-                tvpParam.Value = table;
+        private static DataTable CreateRoleIdsTable(IEnumerable<Guid> roleIds)
+        {
+            var table = new DataTable();
+            table.Columns.Add("RoleId", typeof(Guid));
 
-                if (tvpParam is SqlParameter sqlParam)
-                {
-                    sqlParam.SqlDbType = SqlDbType.Structured;
-                    sqlParam.TypeName = "dbo.RoleIdList";
-                }
-
-                command.Parameters.Add(tvpParam);
-
-                connection.Open();
-                command.ExecuteNonQuery();
+            foreach (var roleId in roleIds)
+            {
+                table.Rows.Add(roleId);
             }
+
+            return table;
         }
     }
 }

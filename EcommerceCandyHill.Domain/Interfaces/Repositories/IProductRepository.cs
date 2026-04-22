@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Domain.Interfaces.Repositories
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        void AddTagsToProduct(Guid productId, IEnumerable<Guid> tagIds);
+        Task AddTagsToProductAsync(Guid productId, IEnumerable<Guid> tagIds);
     }
 }

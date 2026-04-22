@@ -11,8 +11,8 @@ namespace EcommerceCandyHill.Application.Tags.Commands
 {
     public interface ITagCommandService
     {
-        ValidationResult Create(CreateTagCommand command);
-        ValidationResult Update(UpdateTagCommand command);
-        ValidationResult Deactivate(DeleteTagCommand command);
+        Task<ValidationResult> CreateAsync(CreateTagCommand command);
+        Task<ValidationResult> UpdateAsync(UpdateTagCommand command);
+        Task<ValidationResult> DeactivateAsync(DeleteTagCommand command);
     }
 }

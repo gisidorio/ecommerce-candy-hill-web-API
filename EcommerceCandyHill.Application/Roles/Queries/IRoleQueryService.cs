@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.Roles.Queries
 {
     public interface IRoleQueryService
     {
-        List<GetAllRolesQuery> GetAll();
+        Task<List<GetAllRolesQuery>> GetAllAsync();
     }
 }

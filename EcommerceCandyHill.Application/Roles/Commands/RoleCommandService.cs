@@ -23,7 +23,7 @@ namespace EcommerceCandyHill.Application.Roles.Commands
             _roleValidator = roleValidator;
         }
 
-        public ValidationResult Create(CreateRoleCommand command)
+        public async Task<ValidationResult> CreateAsync(CreateRoleCommand command)
         {
             var validation = _roleValidator.Validate(command);
 
@@ -39,16 +39,16 @@ namespace EcommerceCandyHill.Application.Roles.Commands
                 IsActive = command.IsActive
             };
 
-            _roleDomainService.Save(role);
+            await _roleDomainService.SaveAsync(role);
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeleteRoleCommand command)
+        public async Task<ValidationResult> DeactivateAsync(DeleteRoleCommand command)
         {
             var validation = _roleValidator.Validate(command);
 
-            var role = _roleDomainService.GetById(command.Id);
+            var role = await _roleDomainService.GetByIdAsync(command.Id);
 
             if (role == null)
             {
@@ -63,11 +63,12 @@ namespace EcommerceCandyHill.Application.Roles.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _roleDomainService.Deactivate(command.Id);
+            await _roleDomainService.DeactivateAsync(command.Id);
+
             return validation;
         }
 
-        public ValidationResult Update(UpdateRoleCommand command)
+        public async Task<ValidationResult> UpdateAsync(UpdateRoleCommand command)
         {
             var validation = _roleValidator.Validate(command);
 
@@ -76,7 +77,7 @@ namespace EcommerceCandyHill.Application.Roles.Commands
                 return validation;
             }
 
-            var tag = _roleDomainService.GetById(command.Id);
+            var tag = _roleDomainService.GetByIdAsync(command.Id);
 
             if (tag == null)
             {
@@ -91,7 +92,7 @@ namespace EcommerceCandyHill.Application.Roles.Commands
                 IsActive = command.IsActive
             };
 
-            _roleDomainService.Update(roleUpdate);
+            await _roleDomainService.UpdateAsync(roleUpdate);
 
             return validation;
         }

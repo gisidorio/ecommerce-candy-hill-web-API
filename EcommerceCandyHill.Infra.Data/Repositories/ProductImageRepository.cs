@@ -20,181 +20,164 @@ namespace EcommerceCandyHill.Infra.Data.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductImage_Deactivate";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductImage_Deactivate";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = id
+            });
 
-                    command.Parameters.Add(
-                        new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                        {
-                            Value = id
-                        });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
 
-        public List<ProductImage> GetAll()
+        public async Task<List<ProductImage>> GetAllAsync()
         {
             var productImages = new List<ProductImage>();
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductImage_GetAll";
+            command.CommandType = CommandType.StoredProcedure;
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
             {
-                using (var command = connection.CreateCommand())
+                var productImage = new ProductImage
                 {
-                    command.CommandText = "usp_ProductImage_GetAll";
-                    command.CommandType = CommandType.StoredProcedure;
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
+                    ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                    IsMain = reader.GetBoolean(reader.GetOrdinal("IsMain")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
 
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            var productImage = new ProductImage
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
-                                IsMain = Convert.ToBoolean(reader["IsMain"]),
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-                            };
-
-                            productImages.Add(productImage);
-                        }
-                    }
-
-                    connection.Close();
-                }
+                productImages.Add(productImage);
             }
 
             return productImages;
         }
 
-        public ProductImage? GetById(Guid id)
+        public async Task<ProductImage?> GetByIdAsync(Guid id)
         {
             ProductImage? productImage = null;
 
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductImage_GetById";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
+                Value = id
+            });
+
+            await connection.OpenAsync();
+
+            await using var reader = await command.ExecuteReaderAsync();
+
+            if (await reader.ReadAsync())
+            {
+                productImage = new ProductImage
                 {
-                    command.CommandText = "usp_ProductImage_GetById";
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier) { Value = id });
-
-                    connection.Open();
-
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            productImage = new ProductImage
-                            {
-                                Id = reader.GetGuid(reader.GetOrdinal("Id")),
-                                ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
-                                IsMain = Convert.ToBoolean(reader["IsMain"]),
-                                IsActive = Convert.ToBoolean(reader["IsActive"]),
-                                CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
-                            };
-                        }
-                    }
-                }
+                    Id = reader.GetGuid(reader.GetOrdinal("Id")),
+                    ProductId = reader.GetGuid(reader.GetOrdinal("ProductId")),
+                    ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                    IsMain = reader.GetBoolean(reader.GetOrdinal("IsMain")),
+                    IsActive = reader.GetBoolean(reader.GetOrdinal("IsActive")),
+                    CreatedAt = reader.GetDateTime(reader.GetOrdinal("CreatedAt"))
+                };
             }
 
             return productImage;
         }
 
-        public Guid Save(ProductImage entity)
+        public async Task<Guid> SaveAsync(ProductImage entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductImage_Insert";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductImage_Insert";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.ProductId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.ProductId
-                    });
+            command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
+            {
+                Value = entity.ImageUrl
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
-                    {
-                        Value = entity.ImageUrl
-                    });
+            command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
+            {
+                Value = entity.IsMain
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
-                    {
-                        Value = entity.IsMain
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
 
             return entity.Id;
         }
 
-        public void Update(ProductImage entity)
+        public async Task UpdateAsync(ProductImage entity)
         {
-            using (var connection = _connectionFactory.CreateDatabaseConnection())
+            await using var connection = _connectionFactory.CreateDatabaseConnection();
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = "usp_ProductImage_Update";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
             {
-                using (var command = connection.CreateCommand())
-                {
-                    command.CommandText = "usp_ProductImage_Update";
-                    command.CommandType = CommandType.StoredProcedure;
+                Value = entity.Id
+            });
 
-                    command.Parameters.Add(new SqlParameter("@Id", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.Id
-                    });
+            command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
+            {
+                Value = entity.ProductId
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ProductId", SqlDbType.UniqueIdentifier)
-                    {
-                        Value = entity.ProductId
-                    });
+            command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
+            {
+                Value = entity.ImageUrl
+            });
 
-                    command.Parameters.Add(new SqlParameter("@ImageUrl", SqlDbType.VarChar)
-                    {
-                        Value = entity.ImageUrl
-                    });
+            command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
+            {
+                Value = entity.IsMain
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsMain", SqlDbType.Bit)
-                    {
-                        Value = entity.IsMain
-                    });
+            command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
+            {
+                Value = entity.IsActive
+            });
 
-                    command.Parameters.Add(new SqlParameter("@IsActive", SqlDbType.Bit)
-                    {
-                        Value = entity.IsActive
-                    });
-
-                    command.ExecuteNonQuery();
-                    connection.Close();
-                }
-            }
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

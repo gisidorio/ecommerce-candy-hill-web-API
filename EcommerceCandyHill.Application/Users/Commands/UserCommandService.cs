@@ -23,7 +23,7 @@ namespace EcommerceCandyHill.Application.Users.Commands
             _userValidator = userValidator;
         }
 
-        public ValidationResult Create(CreateUserCommand command)
+        public async Task<ValidationResult> CreateAsync(CreateUserCommand command)
         {
             var validation = _userValidator.Validate(command);
 
@@ -41,22 +41,21 @@ namespace EcommerceCandyHill.Application.Users.Commands
                 IsActive = command.IsActive
             };
 
-            var userId = _userDomainService.Save(user);
+            var userId = await _userDomainService.SaveAsync(user);
 
             if (command.RoleIds != null && command.RoleIds.Any())
             {
-                _userDomainService.AddRolesToUser(userId, command.RoleIds);
+                await _userDomainService.AddRolesToUserAsync(userId, command.RoleIds);
             }
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeleteUserCommand command)
+        public async Task<ValidationResult> DeactivateAsync(DeleteUserCommand command)
         {
             var validation = _userValidator.Validate(command);
 
-            var user = _userDomainService.GetById(command.Id);
-
+            var user = await _userDomainService.GetByIdAsync(command.Id);
             if (user == null)
             {
                 validation.AddError("Tag não encontrada.");
@@ -70,11 +69,11 @@ namespace EcommerceCandyHill.Application.Users.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _userDomainService.Deactivate(command.Id);
+            await _userDomainService.DeactivateAsync(command.Id);
             return validation;
         }
 
-        public ValidationResult Update(UpdateUserCommand command)
+        public async Task<ValidationResult> UpdateAsync(UpdateUserCommand command)
         {
             var validation = _userValidator.Validate(command);
 
@@ -83,7 +82,7 @@ namespace EcommerceCandyHill.Application.Users.Commands
                 return validation;
             }
 
-            var user = _userDomainService.GetById(command.Id);
+            var user = await _userDomainService.GetByIdAsync(command.Id);
 
             if (user == null)
             {
@@ -103,7 +102,7 @@ namespace EcommerceCandyHill.Application.Users.Commands
 
             if (command.RoleIds != null && command.RoleIds.Any())
             {
-                _userDomainService.UpdateRolesToUser(command.Id, command.RoleIds);
+                await _userDomainService.UpdateRolesToUserAsync(command.Id, command.RoleIds);
             }
 
             return validation;

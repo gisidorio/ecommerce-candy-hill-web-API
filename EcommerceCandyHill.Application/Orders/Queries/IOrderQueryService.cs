@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.Orders.Queries
 {
     public interface IOrderQueryService
     {
-        List<GetAllOrdersQuery> GetAll();
+        Task<List<GetAllOrdersQuery>> GetAllAsync();
     }
 }

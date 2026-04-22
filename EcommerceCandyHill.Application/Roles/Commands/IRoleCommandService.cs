@@ -11,8 +11,8 @@ namespace EcommerceCandyHill.Application.Roles.Commands
 {
     public interface IRoleCommandService
     {
-        ValidationResult Create(CreateRoleCommand command);
-        ValidationResult Update(UpdateRoleCommand command);
-        ValidationResult Deactivate(DeleteRoleCommand command);
+        Task<ValidationResult> CreateAsync(CreateRoleCommand command);
+        Task<ValidationResult> UpdateAsync(UpdateRoleCommand command);
+        Task<ValidationResult> DeactivateAsync(DeleteRoleCommand command);
     }
 }

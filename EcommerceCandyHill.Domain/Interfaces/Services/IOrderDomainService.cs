@@ -9,10 +9,10 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IOrderDomainService
     {
-        Guid Save(Order order);
-        List<Order> GetAll();
-        void Update(Order order);
-        void Deactivate(Guid id);
-        Order? GetById(Guid id);
+        Task<Guid> SaveAsync(Order order);
+        Task<List<Order>> GetAllAsync();
+        Task UpdateAsync(Order order);
+        Task DeactivateAsync(Guid id);
+        Task<Order?> GetByIdAsync(Guid id);
     }
 }

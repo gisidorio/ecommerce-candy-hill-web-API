@@ -23,7 +23,7 @@ namespace EcommerceCandyHill.Application.Tags.Commands
             _tagValidator = tagValidator;
         }
 
-        public ValidationResult Create(CreateTagCommand command)
+        public async Task<ValidationResult> CreateAsync(CreateTagCommand command)
         {
             var validation = _tagValidator.Validate(command);
 
@@ -39,16 +39,16 @@ namespace EcommerceCandyHill.Application.Tags.Commands
                 IsActive = command.IsActive
             };
 
-            _tagDomainService.Save(tag);
+            await _tagDomainService.SaveAsync(tag);
 
             return validation;
         }
 
-        public ValidationResult Deactivate(DeleteTagCommand command)
+        public async Task<ValidationResult> DeactivateAsync(DeleteTagCommand command)
         {
             var validation = _tagValidator.Validate(command);
 
-            var product = _tagDomainService.GetById(command.Id);
+            var product = await _tagDomainService.GetByIdAsync(command.Id);
 
             if (product == null)
             {
@@ -63,11 +63,11 @@ namespace EcommerceCandyHill.Application.Tags.Commands
             if (!validation.IsValid)
                 return validation;
 
-            _tagDomainService.Deactivate(command.Id);
+            await _tagDomainService.DeactivateAsync(command.Id);
             return validation;
         }
 
-        public ValidationResult Update(UpdateTagCommand command)
+        public async Task<ValidationResult> UpdateAsync(UpdateTagCommand command)
         {
             var validation = _tagValidator.Validate(command);
 
@@ -76,7 +76,7 @@ namespace EcommerceCandyHill.Application.Tags.Commands
                 return validation;
             }
 
-            var tag = _tagDomainService.GetById(command.Id);
+            var tag = _tagDomainService.GetByIdAsync(command.Id);
 
             if (tag == null)
             {
@@ -91,7 +91,7 @@ namespace EcommerceCandyHill.Application.Tags.Commands
                 IsActive = command.IsActive
             };
 
-            _tagDomainService.Update(tagUpdate);
+            await _tagDomainService.UpdateAsync(tagUpdate);
 
             return validation;
         }

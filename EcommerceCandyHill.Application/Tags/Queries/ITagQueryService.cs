@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.Tags.Queries
 {
     public interface ITagQueryService
     {
-        List<GetAllTagsQuery> GetAll();
+        Task<List<GetAllTagsQuery>> GetAllAsync();
     }
 }

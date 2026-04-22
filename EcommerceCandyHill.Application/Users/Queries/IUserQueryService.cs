@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.Users.Queries
 {
     public interface IUserQueryService
     {
-        List<GetAllUsersQuery> GetAll();
+        Task<List<GetAllUsersQuery>> GetAllAsync();
     }
 }

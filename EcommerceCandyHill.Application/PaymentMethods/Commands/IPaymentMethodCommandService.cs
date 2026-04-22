@@ -11,8 +11,8 @@ namespace EcommerceCandyHill.Application.PaymentMethods.Commands
 {
     public interface IPaymentMethodCommandService
     {
-        ValidationResult Create(CreatePaymentMethodCommand command);
-        ValidationResult Update(UpdatePaymentMethodCommand command);
-        ValidationResult Deactivate(DeletePaymentMethodCommand command);
+        Task<ValidationResult> Create(CreatePaymentMethodCommand command);
+        Task<ValidationResult> Update(UpdatePaymentMethodCommand command);
+        Task<ValidationResult> Deactivate(DeletePaymentMethodCommand command);
     }
 }

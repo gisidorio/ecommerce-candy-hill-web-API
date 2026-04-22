@@ -22,9 +22,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var users = _userQueryService.GetAll();
+            var users = await _userQueryService.GetAllAsync();
 
             if (!users.Any())
                 return NoContent();
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> SaveAsync([FromBody] CreateUserCommand command)
         {
-            var result = _userCommandService.Create(command);
+            var result = await _userCommandService.CreateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -44,12 +44,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateUserCommand command)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateUserCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do usuário é diferente do id informado na rota.");
 
-            var result = _userCommandService.Update(command);
+            var result = await _userCommandService.UpdateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -58,11 +58,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var command = new DeleteUserCommand { Id = id };
 
-            var result = _userCommandService.Deactivate(command);
+            var result = await _userCommandService.DeactivateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
