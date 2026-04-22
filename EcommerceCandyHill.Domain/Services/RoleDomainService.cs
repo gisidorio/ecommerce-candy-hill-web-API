@@ -18,29 +18,29 @@ namespace EcommerceCandyHill.Domain.Services
             _roleRepository = roleRepository;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            _roleRepository.DeactivateAsync(id);
+            await _roleRepository.DeactivateAsync(id);
         }
 
-        public List<Role> GetAll()
+        public async Task<List<Role>> GetAllAsync()
         {
-            return _roleRepository.GetAllAsync();
+            return await _roleRepository.GetAllAsync();
         }
 
-        public Role? GetById(Guid id)
+        public async Task<Role?> GetByIdAsync(Guid id)
         {
-            return _roleRepository.GetByIdAsync(id);
+            return await _roleRepository.GetByIdAsync(id);
         }
 
-        public Guid Save(Role role)
+        public async Task<Guid> SaveAsync(Role role)
         {
-            return _roleRepository.SaveAsync(role);
+            return await _roleRepository.SaveAsync(role);
         }
 
-        public void Update(Role role)
+        public async Task UpdateAsync(Role role)
         {
-            _roleRepository.UpdateAsync(role);
+            await _roleRepository.UpdateAsync(role);
         }
     }
 }

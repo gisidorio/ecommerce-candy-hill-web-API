@@ -17,9 +17,9 @@ namespace EcommerceCandyHill.Application.Tags.Queries
             _tagDomainService = tagDomainService;
         }
 
-        public List<GetAllTagsQuery> GetAll()
+        public async Task<List<GetAllTagsQuery>> GetAllAsync()
         {
-            var tags = _tagDomainService.GetAll();
+            var tags = await _tagDomainService.GetAllAsync();
             var tagQueries = new List<GetAllTagsQuery>();
 
             foreach (var tag in tags)

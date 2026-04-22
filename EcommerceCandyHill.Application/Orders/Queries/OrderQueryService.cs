@@ -19,9 +19,9 @@ namespace EcommerceCandyHill.Application.Orders.Queries
             _orderDomainService = orderDomainService;
         }
 
-        public List<GetAllOrdersQuery> GetAll()
+        public async Task<List<GetAllOrdersQuery>> GetAllAsync()
         {
-            var orders = _orderDomainService.GetAll();
+            var orders = await _orderDomainService.GetAllAsync();
             var ordersQueries = new List<GetAllOrdersQuery>();
 
             foreach (var order in orders)

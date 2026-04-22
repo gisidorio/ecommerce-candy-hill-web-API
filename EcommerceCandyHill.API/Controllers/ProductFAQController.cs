@@ -22,9 +22,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var tags = _productFAQQueryService.GetAll();
+            var tags = await _productFAQQueryService.GetAllAsync();
 
             if (!tags.Any())
                 return NoContent();
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateProductFAQCommand command)
+        public async Task<IActionResult> SaveAsync([FromBody] CreateProductFAQCommand command)
         {
-            var result = _productFAQCommandService.Create(command);
+            var result = await _productFAQCommandService.Create(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -44,12 +44,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateProductFAQCommand command)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateProductFAQCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id da FAQ é diferente do id informado na rota.");
 
-            var result = _productFAQCommandService.Update(command);
+            var result = await _productFAQCommandService.Update(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -58,11 +58,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var command = new DeleteProductFAQCommand { Id = id };
 
-            var result = _productFAQCommandService.Deactivate(command);
+            var result = await _productFAQCommandService.Deactivate(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

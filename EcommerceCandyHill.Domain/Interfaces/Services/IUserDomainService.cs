@@ -9,12 +9,12 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface IUserDomainService
     {
-        Guid Save(User user);
-        List<User> GetAll();
-        void Update(User user);
-        void Deactivate(Guid id);
-        User? GetById(Guid id);
-        void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
-        void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds);
+        Task<Guid> SaveAsync(User user);
+        Task<List<User>> GetAllAsync();
+        Task UpdateAsync(User user);
+        Task DeactivateAsync(Guid id);
+        Task<User?> GetByIdAsync(Guid id);
+        Task AddRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds);
+        Task UpdateRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds);
     }
 }

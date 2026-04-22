@@ -11,7 +11,7 @@ namespace EcommerceCandyHill.Application.Orders.Commands
 {
     public interface IOrderCommandService
     {
-        Task<ValidationResult> Create(CreateOrderCommand command);
-        Task<ValidationResult> Update(UpdateOrderCommand command);
+        Task<ValidationResult> CreateAsync(CreateOrderCommand command);
+        Task<ValidationResult> UpdateAsync(UpdateOrderCommand command);
     }
 }

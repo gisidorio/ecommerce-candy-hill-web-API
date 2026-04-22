@@ -9,10 +9,10 @@ namespace EcommerceCandyHill.Domain.Interfaces.Services
 {
     public interface ITagDomainService
     {
-        Guid Save(Tag tag);
-        List<Tag> GetAll();
-        void Update(Tag tag);
-        void Deactivate(Guid id);
-        Tag? GetById(Guid id);
+        Task<Guid> SaveAsync(Tag tag);
+        Task<List<Tag>> GetAllAsync();
+        Task UpdateAsync(Tag tag);
+        Task DeactivateAsync(Guid id);
+        Task<Tag?> GetByIdAsync(Guid id);
     }
 }

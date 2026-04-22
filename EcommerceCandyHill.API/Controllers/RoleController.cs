@@ -22,9 +22,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var roles = _roleQueryService.GetAll();
+            var roles = await _roleQueryService.GetAllAsync();
 
             if (!roles.Any())
                 return NoContent();
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateRoleCommand command)
+        public async Task<IActionResult> SaveAsync([FromBody] CreateRoleCommand command)
         {
-            var result = _roleCommandService.Create(command);
+            var result = await _roleCommandService.CreateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -44,12 +44,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateRoleCommand command)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateRoleCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id do papél é diferente do id informado na rota.");
 
-            var result = _roleCommandService.Update(command);
+            var result = await _roleCommandService.UpdateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -58,11 +58,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var command = new DeleteRoleCommand { Id = id };
 
-            var result = _roleCommandService.Deactivate(command);
+            var result = await _roleCommandService.DeactivateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

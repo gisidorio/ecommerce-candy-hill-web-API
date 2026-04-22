@@ -18,9 +18,9 @@ namespace EcommerceCandyHill.Application.Users.Queries
             _userDomainService = userDomainService;
         }
 
-        public List<GetAllUsersQuery> GetAll()
+        public async Task<List<GetAllUsersQuery>> GetAllAsync()
         {
-            var users = _userDomainService.GetAll();
+            var users = await _userDomainService.GetAllAsync();
             var userQueries = new List<GetAllUsersQuery>();
 
             foreach (var user in users)

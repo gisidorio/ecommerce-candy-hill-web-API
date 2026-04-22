@@ -9,6 +9,6 @@ namespace EcommerceCandyHill.Application.ProductFAQs.Queries
 {
     public interface IProductFAQQueryService
     {
-        List<GetAllProductFAQsQuery> GetAll();
+        Task<List<GetAllProductFAQsQuery>> GetAllAsync();
     }
 }

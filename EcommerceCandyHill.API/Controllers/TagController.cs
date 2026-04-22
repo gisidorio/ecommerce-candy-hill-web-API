@@ -22,9 +22,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var tags = _tagQueryService.GetAll();
+            var tags = await _tagQueryService.GetAllAsync();
 
             if (!tags.Any())
                 return NoContent();
@@ -33,9 +33,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateTagCommand command)
+        public async Task<IActionResult> SaveAsync([FromBody] CreateTagCommand command)
         {
-            var result = _tagCommandService.Create(command);
+            var result = await _tagCommandService.CreateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -44,12 +44,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateTagCommand command)
+        public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateTagCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id da tag é diferente do id informado na rota.");
 
-            var result = _tagCommandService.Update(command);
+            var result = await _tagCommandService.UpdateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -58,11 +58,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var command = new DeleteTagCommand { Id = id };
 
-            var result = _tagCommandService.Deactivate(command);
+            var result = await _tagCommandService.DeactivateAsync(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

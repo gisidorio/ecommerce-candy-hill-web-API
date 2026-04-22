@@ -18,29 +18,29 @@ namespace EcommerceCandyHill.Domain.Services
             _tagRepository = tagRepository;
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            _tagRepository.DeactivateAsync(id);
+            await _tagRepository.DeactivateAsync(id);
         }
 
-        public List<Tag> GetAll()
+        public async Task<List<Tag>> GetAllAsync()
         {
-            return _tagRepository.GetAllAsync();
+            return await _tagRepository.GetAllAsync();
         }
 
-        public Tag? GetById(Guid id)
+        public async Task<Tag?> GetByIdAsync(Guid id)
         {
-            return _tagRepository.GetByIdAsync(id);
+            return await _tagRepository.GetByIdAsync(id);
         }
 
-        public Guid Save(Tag tag)
+        public async Task<Guid> SaveAsync(Tag tag)
         {
-            return _tagRepository.SaveAsync(tag);    
+            return await _tagRepository.SaveAsync(tag);    
         }
 
-        public void Update(Tag tag)
+        public async Task UpdateAsync(Tag tag)
         {
-            _tagRepository.UpdateAsync(tag);
+            await _tagRepository.UpdateAsync(tag);
         }
     }
 }

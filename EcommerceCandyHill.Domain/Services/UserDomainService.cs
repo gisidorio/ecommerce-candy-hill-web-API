@@ -18,39 +18,39 @@ namespace EcommerceCandyHill.Domain.Services
             _userRepository = userRepository;
         }
 
-        public void AddRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
+        public async Task AddRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds)
         {
-            _userRepository.AddRolesToUser(userId, roleIds);
+            await _userRepository.AddRolesToUserAsync(userId, roleIds);
         }
 
-        public void Deactivate(Guid id)
+        public async Task DeactivateAsync(Guid id)
         {
-            _userRepository.DeactivateAsync(id);
+            await _userRepository.DeactivateAsync(id);
         }
 
-        public List<User> GetAll()
+        public async Task<List<User>> GetAllAsync()
         {
-            return _userRepository.GetAllAsync();
+            return await _userRepository.GetAllAsync();
         }
 
-        public User? GetById(Guid id)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
-            return _userRepository.GetByIdAsync(id);
+            return await _userRepository.GetByIdAsync(id);
         }
 
-        public Guid Save(User user)
+        public async Task<Guid> SaveAsync(User user)
         {
-            return _userRepository.SaveAsync(user);
+            return await _userRepository.SaveAsync(user);
         }
 
-        public void Update(User user)
+        public async Task UpdateAsync(User user)
         {
-            _userRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(user);
         }
 
-        public void UpdateRolesToUser(Guid userId, IEnumerable<Guid> roleIds)
+        public async Task UpdateRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds)
         {
-            _userRepository.UpdateRolesToUser(userId, roleIds);
+            await _userRepository.UpdateRolesToUserAsync(userId, roleIds);
         }
     }
 }

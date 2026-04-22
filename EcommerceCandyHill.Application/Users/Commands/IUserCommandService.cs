@@ -11,8 +11,8 @@ namespace EcommerceCandyHill.Application.Users.Commands
 {
     public interface IUserCommandService
     {
-        ValidationResult Create(CreateUserCommand command);
-        ValidationResult Update(UpdateUserCommand command);
-        ValidationResult Deactivate(DeleteUserCommand command);
+        Task<ValidationResult> CreateAsync(CreateUserCommand command);
+        Task<ValidationResult> UpdateAsync(UpdateUserCommand command);
+        Task<ValidationResult> DeactivateAsync(DeleteUserCommand command);
     }
 }

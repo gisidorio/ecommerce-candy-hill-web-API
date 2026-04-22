@@ -13,7 +13,6 @@ namespace EcommerceCandyHill.API.Controllers
         private readonly IProductImageCommandService _productImageCommandService;
         private readonly IProductImageQueryService _productImageQueryService;
 
-
         public ProductImageController(IProductImageCommandService productImageCommandService, IProductImageQueryService productImageQueryService)
         {
             _productImageCommandService = productImageCommandService;
@@ -21,9 +20,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var products = _productImageQueryService.GetAll();
+            var products = await _productImageQueryService.GetAll();
 
             if (!products.Any())
                 return NoContent();
@@ -32,9 +31,9 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Save([FromBody] CreateProductImageCommand command)
+        public async Task<IActionResult> Save([FromBody] CreateProductImageCommand command)
         {
-            var result = _productImageCommandService.Create(command);
+            var result = await _productImageCommandService.Create(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -43,12 +42,12 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] UpdateProductImageCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductImageCommand command)
         {
             if (id != command.Id)
                 return BadRequest("O id da imagem é diferente do id informado na rota.");
 
-            var result = _productImageCommandService.Update(command);
+            var result = await _productImageCommandService.Update(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);
@@ -57,11 +56,11 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeleteProductImageCommand { Id = id };
 
-            var result = _productImageCommandService.Deactivate(command);
+            var result = await _productImageCommandService.Deactivate(command);
 
             if (!result.IsValid)
                 return BadRequest(result.Message);

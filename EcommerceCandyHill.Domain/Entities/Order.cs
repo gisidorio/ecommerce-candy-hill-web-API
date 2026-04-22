@@ -16,6 +16,5 @@ namespace EcommerceCandyHill.Domain.Entities
         public required string Status { get; set; }
         public List<OrderItem> Items { get; set; } = new();
         public DateTime? CreatedAt { get; set; }
-
     }
 }
