@@ -1,7 +1,9 @@
-﻿using EcommerceCandyHill.Application.Orders.Commands.DTO;
+﻿using EcommerceCandyHill.Application.Messaging;
+using EcommerceCandyHill.Application.Orders.Commands.DTO;
 using EcommerceCandyHill.Application.Validators;
 using EcommerceCandyHill.Application.Validators.Interfaces;
 using EcommerceCandyHill.Domain.Entities;
+using EcommerceCandyHill.Domain.Events;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using EcommerceCandyHill.Domain.Services;
 using System;
@@ -17,15 +19,18 @@ namespace EcommerceCandyHill.Application.Orders.Commands
         private readonly IOrderDomainService _orderDomainService;
         private readonly IProductDomainService _productDomainService;
         private readonly IOrderValidator _orderValidator;
+        private readonly IEventPublisher _eventPublisher;
 
         public OrderCommandService(IOrderDomainService orderDomainService, 
             IOrderValidator orderValidator,
-            IProductDomainService productDomainService
+            IProductDomainService productDomainService,
+            IEventPublisher eventPublisher
             )
         {
             _productDomainService = productDomainService;
             _orderDomainService = orderDomainService;
             _orderValidator = orderValidator;
+            _eventPublisher = eventPublisher;
         }
 
         public async Task<ValidationResult> CreateAsync(CreateOrderCommand command)
@@ -87,6 +92,14 @@ namespace EcommerceCandyHill.Application.Orders.Commands
             order.Items = items;
 
             await _orderDomainService.SaveAsync(order);
+
+            await _eventPublisher.PublishAsync(new OrderCreatedEvent
+            {
+                OrderId = order.Id,
+                UserId = order.UserId,
+                Total = order.Total,
+                Status = order.Status
+            }, "order-created");
 
             return validation;
         }

@@ -34,7 +34,6 @@ namespace EcommerceCandyHill.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
         public async Task<IActionResult> SaveAsync([FromBody] CreateOrderCommand command)
         {
             var result = await _orderCommandService.CreateAsync(command);

@@ -1,3 +1,5 @@
+using EcommerceCandyHill.Application.AI.Interfaces;
+using EcommerceCandyHill.Application.Messaging;
 using EcommerceCandyHill.Application.Orders.Commands;
 using EcommerceCandyHill.Application.Orders.Queries;
 using EcommerceCandyHill.Application.PaymentMethods.Commands;
@@ -20,10 +22,13 @@ using EcommerceCandyHill.Domain.Interfaces.Repositories;
 using EcommerceCandyHill.Domain.Interfaces.Services;
 using EcommerceCandyHill.Domain.Services;
 using EcommerceCandyHill.Infra.Data;
+using EcommerceCandyHill.Infra.Data.AI;
+using EcommerceCandyHill.Infra.Data.Messaging;
 using EcommerceCandyHill.Infra.Data.Repositories;
 using EcommerceCandyHill.MVC.Models.Save;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.SemanticKernel;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -110,8 +115,28 @@ builder.Services.AddTransient<IOrderValidator, OrderValidator>();
 
 #endregion
 
+#region Semantic Kernel Configuration
+
+builder.Services.AddScoped<ICodeGeneratorService, SemanticKernelCodeGeneratorService>();
+
+var aiConfig = builder.Configuration.GetSection("AI");
+var apiKey = aiConfig["ApiKey"]!;
+var modelId = aiConfig["ModelId"]!;
+
+#pragma warning disable SKEXP0010, SKEXP0001
+builder.Services.AddKernel()
+    .AddOpenAIChatCompletion(
+        modelId: modelId,
+        apiKey: apiKey,
+        endpoint: new Uri("https://api.groq.com/openai/v1")
+    );
+#pragma warning restore SKEXP0010, SKEXP0001
+#endregion
+
 builder.Services.AddTransient<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddSingleton<DatabaseSettings>();
+builder.Services.AddSingleton<IEventPublisher, RabbitMQEventPublisher>();
+
 
 builder.Services.AddControllersWithViews();
 
